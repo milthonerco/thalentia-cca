@@ -1,0 +1,16 @@
+---
+const { item } = Astro.props;
+---
+<div class="flex flex-col md:flex-row items-center gap-6">
+  <!-- Info izquierda -->
+  <div class="max-w-lg order-2 md:order-1">
+    <h1 class="text-4xl text-orange-600 font-serif mb-2">POWERADE</h1>
+    <h2 class="italic text-2xl text-orange-500 mb-4">: {item.data.title}</h2>
+    <p class="text-orange-400 text-base">{item.data.description}</p>
+  </div>
+  
+  <!-- Imagen derecha -->
+  <div class="order-1 md:order-2">
+    <img src={item.data.image} alt={item.data.title} class="max-w-xl rounded shadow-md" />
+  </div>
+</div>

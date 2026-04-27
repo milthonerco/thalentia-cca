@@ -1,0 +1,18 @@
+---
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+const { children } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Página</title>
+  </head>
+  <body >
+      <slot />
+    <Footer />
+  </body>
+</html>

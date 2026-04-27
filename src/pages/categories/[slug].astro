@@ -1,0 +1,64 @@
+---
+import { getCollection } from "astro:content";
+import CategoryWithGallery from "../../components/CategoryWithGallery.astro";
+import FloatingMenu from "../../components/FloatingMenu.astro";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const items = await getCollection("items");
+  const categories = Array.from(
+    new Set(items.map((item) => item.data.category))
+  );
+
+  return categories.map((category) => ({
+    params: { slug: category },
+  }));
+}
+
+const { slug } = Astro.params;
+
+// Traemos todos los items
+const items = await getCollection("items");
+
+// Filtramos por categoría
+const itemsInCategory = items.filter((item) => item.data.category === slug);
+
+if (itemsInCategory.length === 0) {
+  throw new Error(`No hay items para la categoría: ${slug}`);
+}
+
+// Nuevo: sacar título y descripción de uno de los items
+const firstItem = itemsInCategory[0];
+const categoryTitle = slug
+  .replace(/-/g, " ")
+  .replace(/\b\w/g, (c) => c.toUpperCase()); // Ej: "granny-hall" → "Granny Hall"
+const categoryDescription = firstItem.data.description ?? ""; // si quieres añadir un campo categoryDescription en el frontmatter
+---
+
+<html>
+  <head>
+    <title>Categoría: {categoryTitle}</title>
+  </head>
+  <body>
+    <Layout>
+    <main class="max-w-screen-xl mx-auto pb-20">
+      <CategoryWithGallery
+        itemsInCategory={itemsInCategory}
+        categoryInfo={{
+          title: categoryTitle,
+          description: categoryDescription,
+        }}
+      />
+    </main>
+    <FloatingMenu/>
+    </Layout>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const floatingMenu = document.querySelector('#floatingMenu')
+        if (floatingMenu) {
+          floatingMenu.classList.remove('hidden')
+        }
+      });
+    </script>
+  </body>
+</html>

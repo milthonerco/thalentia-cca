@@ -1,0 +1,186 @@
+---
+import FloatingMenu from "../components/FloatingMenu.astro";
+import Navbar from "../components/Navbar.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <section
+    class="relative min-h-screen bg-gradient-to-br from-[#507687] via-white py-20 px-4"
+  >
+    <div class="w-full flex justify-center items-center mb-10 pt-10">
+      <a href="/">
+        <img
+          src="/LogoPequeno.png"
+          alt="Logo"
+          class="w-full max-w-[250px] h-auto"
+        />
+      </a>
+    </div>
+
+    <div
+      class="max-w-5xl mx-auto backdrop-blur-sm bg-white/80 rounded-3xl shadow-2xl p-10 md:p-16 grid grid-cols-1 md:grid-cols-2 gap-12 border border-white/40 mt-20"
+    >
+      <!-- Info Section -->
+      <div class="flex flex-col justify-center space-y-6">
+        <h1 class="text-4xl font-extrabold text-gray-900">¿Hablamos?</h1>
+        <p class="text-gray-600 text-lg">
+          Si tienes alguna duda o propuesta, no dudes en escribirnos. Te
+          responderemos lo antes posible.
+        </p>
+        <div class="space-y-4 text-gray-700">
+          <div class="flex items-center space-x-3">
+            <span class="text-blue-600 text-xl">📧</span>
+            <p>contacto@ejemplo.com</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="text-blue-600 text-xl">📱</span>
+            <p>+57 300 123 4567</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="text-blue-600 text-xl">📍</span>
+            <p>Bogotá, Colombia</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Section -->
+      <form
+        id="contactForm"
+        class="bg-white rounded-2xl shadow-lg p-8 space-y-6 border border-gray-200"
+      >
+        <h2 class="text-2xl font-semibold text-gray-800">
+          Formulario de Contacto
+        </h2>
+
+        <div>
+          <label
+            for="nombre"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Nombre completo</label
+          >
+          <input
+            id="nombre"
+            type="text"
+            required
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label
+            for="telefono"
+            class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label
+          >
+          <input
+            id="telefono"
+            type="tel"
+            required
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label
+            for="correo"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Correo electrónico</label
+          >
+          <input
+            id="correo"
+            type="email"
+            required
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-[#507687] hover:bg-[#9B177E] text-white font-semibold py-3 rounded-lg transition duration-300 shadow-md"
+        >
+          Enviar mensaje
+        </button>
+
+        <p
+          id="formSuccess"
+          class="hidden text-green-600 font-medium text-center pt-2"
+        >
+          ✅ Enviado correctamente
+        </p>
+        <p
+          id="formError"
+          class="hidden text-red-600 font-medium text-center pt-2"
+        >
+          ❌ Error al enviar
+        </p>
+      </form>
+    </div>
+
+    <FloatingMenu />
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const floatingMenu = document.querySelector("#floatingMenu");
+      if (floatingMenu) floatingMenu.classList.remove("hidden");
+
+      const form = document.querySelector("form") as HTMLFormElement | null;
+      const nombre = document.querySelector(
+        "#nombre"
+      ) as HTMLInputElement | null;
+      const telefono = document.querySelector(
+        "#telefono"
+      ) as HTMLInputElement | null;
+      const correo = document.querySelector(
+        "#correo"
+      ) as HTMLInputElement | null;
+      const successMsg = document.querySelector("#formSuccess");
+      const errorMsg = document.querySelector("#formError");
+
+      if (
+        !form ||
+        !nombre ||
+        !telefono ||
+        !correo ||
+        !successMsg ||
+        !errorMsg
+      ) {
+        console.error("Faltan elementos del DOM.");
+        return;
+      }
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+          nombre: nombre.value,
+          telefono: telefono.value,
+          correo: correo.value,
+          token:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-Q",
+        };
+
+        try {
+          const res = await fetch(
+            "https://script.google.com/macros/s/AKfycbxIs5bZzC1VuBcJTE6vEKjBAXklRomjVUtovrSWWNXxBBw3ta0vplWqVJ0muk3fVBY3_w/exec",
+            {
+              method: "POST",
+           
+              body: JSON.stringify(data),
+            }
+          );
+
+          if (res.ok) {
+            successMsg.classList.remove("hidden");
+            errorMsg.classList.add("hidden");
+            form.reset();
+          } else {
+            throw new Error("Error al enviar");
+          }
+        } catch (err) {
+          successMsg.classList.add("hidden");
+          errorMsg.classList.remove("hidden");
+        }
+      });
+    });
+  </script>
+</Layout>

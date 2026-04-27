@@ -1,0 +1,226 @@
+---
+const footerLinks = [
+  {
+    links: [
+      { text: "GRANNY HALL", href: "/categories/granny-hall" },
+      {
+        text: "COCINA FRANCESA",
+        href: "/categories/granny-hall/cocina-francesa",
+      },
+      { text: "PUNTO", href: "/categories/granny-hall/punto" },
+      { text: "1 TIM 4:12", href: "/categories/granny-hall/1tim4-12" },
+      { text: "HUERTA", href: "/categories/granny-hall/huerta" },
+    ],
+  },
+  {
+    links: [
+      { text: "ART FESTIVAL", href: "/categories/art-festival" },
+      { text: "DRAMA", href: "/categories/art-festival/drama" },
+      { text: "MUSICA", href: "/categories/art-festival/musica" },
+      { text: "DANZA", href: "/categories/art-festival/danza" },
+      { text: "PINTURA", href: "/categories/art-festival/pintura" },
+    ],
+  },
+  {
+    links: [
+      { text: "STARS CUP", href: "/categories/stars-cup" },
+      { text: "BASKET", href: "/categories/stars-cup/basket" },
+      { text: "FUTBOL", href: "/categories/stars-cup/futbol" },
+      { text: "VOLEYBOL", href: "/categories/stars-cup/voleibol" },
+      { text: "PING PONG", href: "/categories/stars-cup/ping-pong" },
+      { text: "KARATE", href: "/categories/stars-cup/karate" },
+      { text: "CHEERLEADERS", href: "/categories/stars-cup/cheerleaders" },
+      { text: "CHESS", href: "/categories/stars-cup/chess" },
+      { text: "DODGEBALL", href: "/categories/stars-cup/dodgeball" },
+    ],
+  },
+  {
+    links: [
+      { text: "MR. MASCADO TECH", href: "/categories/mr-mascadedo-tech" },
+      {
+        text: "EXPLORATION ROVER",
+        href: "/categories/mr-mascadedo-tech/exploration-rover",
+      },
+      {
+        text: "SPACE GREENHOUSE",
+        href: "/categories/mr-mascadedo-tech/space-greenhouse",
+      },
+      {
+        text: "SPACE HABITAT",
+        href: "/categories/mr-mascadedo-tech/space-habitat",
+      },
+    ],
+  },
+];
+
+const giantText = "THALENTIA".split("");
+---
+
+<footer
+  class="bg-[#507687] text-[#FFFCFB] pt-10 px-6 md:px-10 w-full font-sans"
+>
+  <div
+    class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 pb-12 border-b border-white/30"
+  >
+    <!-- Sección de enlaces -->
+    <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-6">
+      {
+        footerLinks.map((group) => (
+          <div>
+            <ul class="space-y-1 text-sm md:text-base">
+              {group.links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="hover:text-[#9B177E] font-medium transition-colors duration-200"
+                  >
+                    {link.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Formulario de suscripción + redes -->
+    <div class="space-y-6">
+      <h4 class="text-lg font-bold text-[#FFFCFB]">Info</h4>
+      <form class="space-y-4" id="footerForm">
+        <input
+          id="footerNombre"
+          type="text"
+          placeholder="Tu nombre"
+          class="w-full px-4 py-2 rounded-md bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-white"
+        />
+        <input
+          id="footerTelefono"
+          type="tel"
+          placeholder="Tu teléfono"
+          class="w-full px-4 py-2 rounded-md bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-white"
+        />
+        <input
+          id="footerCorreo"
+          type="email"
+          placeholder="Tu correo"
+          class="w-full px-4 py-2 rounded-md bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-white"
+        />
+        <button
+          type="submit"
+          class="w-full bg-[#9B177E] text-white font-semibold py-2 rounded-md hover:bg-[#7e1267] transition duration-300"
+        >
+          Enviar
+        </button>
+      </form>
+
+      <div class="flex gap-6 pt-4">
+        <!-- Instagram -->
+        <a
+          href="#"
+          aria-label="Instagram"
+          class="hover:scale-110 transition-transform"
+        >
+          <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+            <path
+              d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 2 .3 2.5.5.6.2 1.1.6 1.5 1.1.5.5.9 1 .9 1.6.2.5.4 1.3.5 2.5.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 2-.5 2.5-.2.6-.6 1.1-1.1 1.5-.5.5-1 .9-1.6.9-.5.2-1.3.4-2.5.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-2-.3-2.5-.5-.6-.2-1.1-.6-1.5-1.1-.5-.5-.9-1-.9-1.6-.2-.5-.4-1.3-.5-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-2 .5-2.5.2-.6.6-1.1 1.1-1.5.5-.5 1-.9 1.6-.9.5-.2 1.3-.4 2.5-.5C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1 .1-1.6.2-2 .4-.5.2-.9.4-1.3.8s-.6.8-.8 1.3c-.2.4-.3 1-.4 2-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1 .2 1.6.4 2 .2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2 .4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1-.1 1.6-.2 2-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2 .1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1-.2-1.6-.4-2-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2-.4-1.2-.1-1.6-.1-4.7-.1zm0 4.1c2.2 0 4 1.8 4 4s-1.8 4-4 4-4-1.8-4-4 1.8-4 4-4zm0 1.8a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4zm4.5-3.6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+            ></path>
+          </svg>
+        </a>
+
+        <!-- Facebook -->
+        <a
+          href="#"
+          aria-label="Facebook"
+          class="hover:scale-110 transition-transform"
+        >
+          <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+            <path
+              d="M22 12.07C22 6.58 17.52 2 12 2S2 6.58 2 12.07c0 5.02 3.66 9.17 8.44 9.93v-7.03H7.9v-2.9h2.54V9.41c0-2.5 1.5-3.89 3.79-3.89 1.1 0 2.25.2 2.25.2v2.48h-1.27c-1.25 0-1.64.78-1.64 1.58v1.9h2.78l-.44 2.9h-2.34V22c4.78-.76 8.44-4.91 8.44-9.93z"
+            ></path>
+          </svg>
+        </a>
+
+        <!-- YouTube -->
+        <a
+          href="#"
+          aria-label="YouTube"
+          class="hover:scale-110 transition-transform"
+        >
+          <svg class="w-6 h-6 fill-white" viewBox="0 0 24 24">
+            <path
+              d="M21.8 8s-.2-1.4-.8-2c-.8-.9-1.6-.9-2-1C16.5 4.7 12 4.7 12 4.7h0s-4.5 0-7 .3c-.4 0-1.2 0-2 1-.6.6-.8 2-.8 2S2 9.6 2 11.2v1.6c0 1.6.2 3.2.2 3.2s.2 1.4.8 2c.8.9 1.8.9 2.2 1 1.6.1 6.8.3 6.8.3s4.5 0 7-.3c.4 0 1.2 0 2-1 .6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.6c0-1.6-.2-3.2-.2-3.2zM9.75 14.3V9.7l5.5 2.3-5.5 2.3z"
+            ></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Texto gigante decorativo -->
+  <div class="relative w-full overflow-hidden mt-12">
+    <div class="flex justify-center gap-3 md:gap-5">
+      {
+        giantText.map((letter) => (
+          <span class="block text-[40px] md:text-[180px] lg:text-[350px] leading-none font-bold transition-transform duration-300 md:translate-y-[50%] translate-y-[30%] hover:translate-y-0 font-mifuente drop-shadow-[0_0_10px_black]">
+            {letter}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.querySelector("#footerForm") as HTMLFormElement;
+      form.reset();
+      const nombre = document.querySelector(
+        "#footerNombre"
+      ) as HTMLInputElement;
+      const telefono = document.querySelector(
+        "#footerTelefono"
+      ) as HTMLInputElement;
+      const correo = document.querySelector(
+        "#footerCorreo"
+      ) as HTMLInputElement;
+      if (!form || !nombre || !telefono || !correo) {
+        console.error("Faltan campos del footer.");
+        return;
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+          nombre: nombre.value,
+          telefono: telefono.value,
+          correo: correo.value,
+          // Reemplaza por tu token real
+          origen: "footer", // Para identificar de dónde viene el formulario
+        };
+
+        try {
+
+          const res = await fetch(
+            "https://script.google.com/macros/s/AKfycbxIs5bZzC1VuBcJTE6vEKjBAXklRomjVUtovrSWWNXxBBw3ta0vplWqVJ0muk3fVBY3_w/exec",
+            {
+              method: "POST",
+
+
+              body: JSON.stringify(data),
+            }
+            
+          );
+
+          if (res.ok) {
+            alert("✅ Datos enviados correctamente ");
+            form.reset();
+          } else {
+            throw new Error("Error al enviar datos ");
+          }
+        } catch (err) {
+          alert("❌ Error al enviar datos");
+        }
+      });
+    });
+  </script>
+</footer>

@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HeroVideo from "../components/HeroVideo.astro";
+import IntroSection from "../components/IntroSection.astro";
+import "../styles/global.css";
+import Navbar from "../components/Navbar.astro";
+import FloatingMenu from "../components/FloatingMenu.astro";
+import SecondSection from "../components/SecondSection.astro";
+---
+
+<Layout title="Web Site Academies CCA">
+  <main>
+    <Navbar />
+    <FloatingMenu />
+    <HeroVideo />
+    <IntroSection />
+    <SecondSection />
+  </main>
+  <script is:inline>
+      document.addEventListener("DOMContentLoaded", () => {
+        const navbar = document.getElementById("mainNavbar");
+        const floatingMenu = document.getElementById("floatingMenu");
+
+        if (!navbar || !floatingMenu) return;
+
+        const heroHeight = window.innerHeight;
+
+        window.addEventListener("scroll", () => {
+          if (window.scrollY < heroHeight / 2) {
+            navbar.classList.remove("hidden");
+            floatingMenu.classList.add("hidden");
+          } else {
+            navbar.classList.add("hidden");
+            floatingMenu.classList.remove("hidden");
+          }
+        });
+      });
+    </script>
+</Layout>

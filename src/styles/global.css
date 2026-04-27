@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: "Horta";
+  src: url("/fonts/Horta.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Gothic";
+  src: url("/fonts/Gothic.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+.font-mifuente {
+  font-family: "Horta", sans-serif;
+}
+.font-gothic {
+  font-family: "Gothic", sans-serif;
+}

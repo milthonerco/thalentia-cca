@@ -1,0 +1,52 @@
+---
+import { getCollection } from "astro:content";
+import CategoryWithGallery from "../../../components/CategoryWithGallery.astro";
+import FloatingMenu from "../../../components/FloatingMenu.astro";
+import Layout from "../../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const items = await getCollection('items');
+  return items.map(item => ({
+    params: {
+      category: item.data.category,
+      item: item.slug,
+    },
+  }));
+}
+
+const { category, item } = Astro.params;
+const itemsAll = await getCollection('items');
+const itemsInCategory = itemsAll.filter(i => i.data.category === category);
+const currentItem = itemsInCategory.find(i => i.slug === item);
+
+if (!currentItem) {
+  throw new Error(`Item no encontrado: category=${category}, item=${item}`);
+}
+
+const categoryDescription = currentItem.data.description ?? '';
+const categoryTitle = category; 
+---
+<html>
+  <body>
+    <Layout>
+    <main class="pb-20 ">
+      <CategoryWithGallery 
+        itemsInCategory={itemsInCategory}
+        categoryInfo={{ title: categoryTitle, description: categoryDescription }}
+        activeItemSlug={item}
+      />
+    </main>
+    
+    <FloatingMenu/>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const floatingMenu = document.querySelector('#floatingMenu')
+        if (floatingMenu) {
+          floatingMenu.classList.remove('hidden')
+        }
+      });
+    </script>
+    </Layout>
+  </body>
+
+</html>
