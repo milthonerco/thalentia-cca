@@ -1,0 +1,52 @@
+<div id="userBubble" class="hidden fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[9999]">
+  <img
+    id="avatar"
+    class="w-9 h-9 sm:w-12 sm:h-12 rounded-full cursor-pointer border shadow"
+  />
+</div>
+
+<div
+  id="popover"
+  class="
+    hidden
+    fixed bottom-16 right-3 sm:bottom-20 sm:right-4
+    w-[85vw] sm:w-72
+    bg-white text-black
+    rounded-xl shadow-xl
+    p-3 sm:p-4
+    z-[9999]
+  "
+>
+  <h3 class="font-bold text-base sm:text-lg mb-2">
+    Mi cuenta
+  </h3>
+
+  <!-- EMAIL -->
+  <p id="userEmail" class="text-xs sm:text-sm text-gray-600 mb-3"></p>
+
+  <!-- ACADEMIAS -->
+  <div>
+    <p class="text-xs sm:text-sm font-semibold mb-2">
+      Mis academias
+    </p>
+
+    <ul id="academyList" class="space-y-1"></ul>
+  </div>
+
+  <!-- BOTONES -->
+  <button
+    id="manageBtn"
+    class="w-full mt-4 bg-black text-white py-2 rounded text-xs sm:text-sm"
+  >
+    Administrar
+  </button>
+
+  <button
+    id="logoutBtn"
+    class="w-full mt-2 border border-gray-300 py-2 rounded text-xs sm:text-sm"
+  >
+    Cerrar sesión
+  </button>
+</div>
+
+<script type="module" src="/src/scripts/userMenu.ts"></script>

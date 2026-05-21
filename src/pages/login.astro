@@ -1,0 +1,40 @@
+---
+---
+
+<html>
+
+<body>
+
+<h1>Portal estudiantes</h1>
+
+<button id="google-login">
+Ingresar con Google
+</button>
+
+<script type="module">
+
+import { supabase }
+from "/src/lib/supabase";
+
+document
+.getElementById("google-login")
+?.addEventListener("click", async()=>{
+
+await supabase.auth.signInWithOAuth({
+
+provider:"google",
+
+options:{
+redirectTo:
+window.location.origin
+}
+
+})
+
+})
+
+</script>
+
+</body>
+
+</html>

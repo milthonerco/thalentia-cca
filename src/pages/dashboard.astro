@@ -1,0 +1,628 @@
+---
+export const prerender = false;
+---
+
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>Dashboard</title>
+
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui;
+
+                background: #f5f6f8;
+
+                margin: 0;
+
+                padding: 24px;
+
+                color: #111;
+            }
+
+            .container {
+                max-width: 1100px;
+
+                margin: auto;
+
+                display: flex;
+
+                flex-direction: column;
+
+                gap: 18px;
+            }
+
+            /* ======================
+HEADER
+====================== */
+
+            .topbar {
+                display: flex;
+
+                justify-content: space-between;
+
+                align-items: center;
+
+                gap: 16px;
+
+                flex-wrap: wrap;
+
+                padding: 20px;
+
+                background: white;
+
+                border-radius: 18px;
+
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            }
+
+            .user {
+                display: flex;
+
+                gap: 14px;
+
+                align-items: center;
+
+                min-width: 0;
+            }
+
+            .user img {
+                width: 60px;
+                height: 60px;
+
+                border-radius: 50%;
+            }
+
+            .user h1 {
+                margin: 0;
+
+                font-size: 16px;
+            }
+
+            .user p {
+                margin: 0;
+
+                font-size: 13px;
+
+                color: #666;
+
+                overflow: hidden;
+
+                text-overflow: ellipsis;
+            }
+
+            /* botones */
+
+            .actions {
+                display: flex;
+
+                gap: 10px;
+
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 10px 14px;
+
+                border: none;
+
+                border-radius: 10px;
+
+                cursor: pointer;
+
+                text-decoration: none;
+
+                font-size: 13px;
+
+                transition: 0.2s;
+
+                display: inline-block;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .btn-home {
+                background: #111;
+
+                color: white;
+            }
+
+            .btn-logout {
+                background: #dc2626;
+
+                color: white;
+            }
+
+            /* ======================
+CARDS
+====================== */
+
+            .card {
+                background: white;
+
+                padding: 22px;
+
+                border-radius: 18px;
+
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            }
+
+            .card h2 {
+                margin-top: 0;
+            }
+
+            /* ======================
+GRID
+====================== */
+
+            .grid {
+                display: grid;
+
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+                gap: 16px;
+            }
+
+            /* ======================
+ACADEMIAS
+====================== */
+
+            .academy {
+                border-radius: 16px;
+
+                padding: 18px;
+
+                text-decoration: none;
+
+                color: inherit;
+
+                transition: 0.2s;
+
+                display: flex;
+
+                flex-direction: column;
+
+                justify-content: space-between;
+
+                min-height: 140px;
+            }
+
+            .academy:hover {
+                transform: translateY(-4px);
+
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            /* colores automáticos */
+
+            .academy:nth-child(1) {
+                background: #eef2ff;
+            }
+
+            .academy:nth-child(2) {
+                background: #dcfce7;
+            }
+
+            .academy:nth-child(3) {
+                background: #fce7f3;
+            }
+
+            .academy:nth-child(4) {
+                background: #fef3c7;
+            }
+
+            .academy:nth-child(5) {
+                background: #ecfeff;
+            }
+
+            .badge {
+                display: inline-block;
+
+                padding: 4px 10px;
+
+                border-radius: 999px;
+
+                font-size: 12px;
+
+                background: white;
+
+                margin-top: 10px;
+            }
+
+            .academy-footer {
+                display: flex;
+
+                justify-content: space-between;
+
+                align-items: center;
+
+                margin-top: 18px;
+
+                font-size: 13px;
+            }
+
+            .verde {
+                color: green;
+
+                font-weight: bold;
+            }
+
+            .rojo {
+                color: red;
+
+                font-weight: bold;
+            }
+
+            .warning {
+                background: #fff4d6;
+
+                padding: 12px;
+
+                border-radius: 10px;
+
+                margin-top: 12px;
+            }
+
+            /* ======================
+MOBILE
+====================== */
+
+            @media (max-width: 640px) {
+                .topbar {
+                    flex-direction: column;
+
+                    align-items: flex-start;
+                }
+
+                .actions {
+                    width: 100%;
+                }
+
+                .actions .btn {
+                    flex: 1;
+
+                    text-align: center;
+                }
+
+                body {
+                    padding: 14px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <!-- HEADER -->
+
+            <div class="topbar">
+                <div id="usuario" class="user">Cargando...</div>
+
+                <div class="actions">
+                    <a href="/" class="btn
+btn-home"> 🏠 Home </a>
+
+                    <button
+                        id="logout"
+                        class="btn
+btn-logout"
+                        style="
+display:none
+"
+                    >
+                        Cerrar sesión
+                    </button>
+                </div>
+            </div>
+
+            <!-- MIS ACADEMIAS -->
+
+            <div class="card">
+                <h2>Mis academias</h2>
+
+                <p id="contador"></p>
+
+                <div id="alerta"></div>
+
+                <div id="misAcademias" class="grid">Cargando...</div>
+            </div>
+
+            <!-- DISPONIBLES -->
+
+            <div class="card">
+                <h2>Academias disponibles</h2>
+
+                <div id="academias" class="grid">Cargando...</div>
+            </div>
+        </div>
+
+        <script type="module">
+            import { supabase } from "/src/lib/supabase.ts";
+
+            /* ======================
+SESION
+====================== */
+
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+
+            if (!session) {
+                window.location = "/login";
+            }
+
+            const email = session.user.email;
+
+            const nombre = session.user.user_metadata.full_name;
+
+            const foto = session.user.user_metadata.avatar_url;
+
+            document.getElementById("usuario").innerHTML = `
+
+<img src="${foto}">
+
+
+<div>
+
+<h1>
+
+${nombre}
+
+</h1>
+
+
+<p>
+
+${email}
+
+</p>
+
+</div>
+
+`;
+
+            document.getElementById("logout").style.display = "inline-block";
+
+            document
+
+                .getElementById("logout")
+
+                .addEventListener(
+                    "click",
+
+                    async () => {
+                        await supabase.auth.signOut();
+
+                        window.location = "/";
+                    },
+                );
+
+            /* ======================
+MIS INSCRIPCIONES
+====================== */
+
+            const { data: misAcademias } = await supabase
+
+                .from("inscripciones")
+
+                .select(
+                    `
+*,
+
+academias(
+
+nombre,
+slug,
+categoria
+
+)
+
+`,
+                )
+
+                .eq("student_email", email)
+
+                .eq("estado", "activa");
+
+            const total = misAcademias?.length ?? 0;
+
+            document.getElementById("contador").innerHTML = `
+
+Inscritas:
+
+<b>
+
+${total}
+
+de 2
+
+</b>
+
+`;
+
+            if (total === 1) {
+                document.getElementById("alerta").innerHTML = `
+
+<div class="warning">
+
+Te falta
+1 academia
+
+para completar
+las inscripciones.
+
+</div>
+
+`;
+            }
+
+            document.getElementById("misAcademias").innerHTML =
+                misAcademias
+
+                    ?.map(
+                        (a) => `
+
+<a
+
+href="/${a.academias.slug}"
+
+class="academy"
+
+>
+
+<div>
+
+<h3>
+
+${a.academias.nombre}
+
+</h3>
+
+
+<span class="badge">
+
+${a.academias.categoria}
+
+</span>
+
+</div>
+
+
+<div
+class="
+academy-footer
+"
+>
+
+<span class="verde">
+
+Inscrito
+
+</span>
+
+
+<span>
+
+Abrir →
+
+</span>
+
+</div>
+
+</a>
+
+`,
+                    )
+
+                    .join("") || "No tienes academias";
+
+            /* ======================
+ACADEMIAS DISPONIBLES
+====================== */
+
+            const { data: academias } = await supabase
+
+                .from("academias")
+
+                .select("*")
+
+                .eq("activa", true);
+
+            let html = "";
+
+            for (const academia of academias ?? []) {
+                const { count } = await supabase
+
+                    .from("inscripciones")
+
+                    .select(
+                        "*",
+
+                        {
+                            count: "exact",
+
+                            head: true,
+                        },
+                    )
+
+                    .eq("academia_id", academia.id)
+
+                    .eq("estado", "activa");
+
+                const disponibles = academia.cupo_maximo - (count ?? 0);
+
+                html += `
+
+<a
+
+href="/${academia.slug}"
+
+class="academy"
+
+>
+
+<div>
+
+<h3>
+
+${academia.nombre}
+
+</h3>
+
+
+<span class="badge">
+
+${academia.categoria}
+
+</span>
+
+</div>
+
+
+
+<div
+class="
+academy-footer
+"
+>
+
+${
+    disponibles > 0
+        ? `<span class="verde">
+
+${disponibles}
+cupos
+
+</span>`
+        : `<span class="rojo">
+
+SIN CUPOS
+
+</span>`
+}
+
+
+
+<span>
+
+Ver →
+
+</span>
+
+</div>
+
+
+</a>
+
+`;
+            }
+
+            document.getElementById("academias").innerHTML = html;
+        </script>
+    </body>
+</html>

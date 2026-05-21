@@ -2,6 +2,7 @@
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 const { children } = Astro.props;
+import UserMenu from "../components/UserMenu.astro";
 ---
 
 <!doctype html>
@@ -14,5 +15,7 @@ const { children } = Astro.props;
   <body >
       <slot />
     <Footer />
+    <UserMenu />
+    <script type="module" src="/src/scripts/initAuth.ts"></script>
   </body>
 </html>
