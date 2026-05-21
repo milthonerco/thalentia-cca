@@ -3,382 +3,293 @@ export const prerender = false;
 ---
 
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
+<head>
+
+<meta charset="UTF-8"/>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1"/>
+
+<title>Dashboard</title>
+
+<style>
+
+body{
+font-family:ui-sans-serif,system-ui;
+background:#f5f6f8;
+margin:0;
+padding:24px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px;
+background:white;
+border-radius:18px;
+}
+
+.user{
+display:flex;
+gap:14px;
+align-items:center;
+}
+
+.user img{
+width:60px;
+height:60px;
+border-radius:50%;
+}
+
+.card{
+background:white;
+padding:22px;
+border-radius:18px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(240px,1fr));
+
+gap:16px;
+}
+
+.academy{
+padding:18px;
+border-radius:16px;
+background:#fff;
+text-decoration:none;
+color:black;
+transition:.2s;
+}
+
+.academy:hover{
+transform:translateY(-3px);
+}
+
+.badge{
+padding:4px 10px;
+background:#eee;
+border-radius:999px;
+font-size:12px;
+}
+
+.academy-footer{
+display:flex;
+justify-content:space-between;
+margin-top:14px;
+}
+
+.verde{
+color:green;
+font-weight:bold;
+}
+
+.rojo{
+color:red;
+font-weight:bold;
+}
+
+.btn{
+padding:10px 14px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+.btn-logout{
+background:#dc2626;
+color:white;
+}
 
-        <title>Dashboard</title>
+</style>
 
-        <style>
-            body {
-                font-family: ui-sans-serif, system-ui;
+</head>
 
-                background: #f5f6f8;
 
-                margin: 0;
+<body>
 
-                padding: 24px;
+<div class="container">
 
-                color: #111;
-            }
 
-            .container {
-                max-width: 1100px;
+<div class="topbar">
 
-                margin: auto;
+<div
+id="usuario"
+class="user"
+>
 
-                display: flex;
+Cargando...
 
-                flex-direction: column;
+</div>
 
-                gap: 18px;
-            }
 
-            /* ======================
-HEADER
-====================== */
+<div style="display:flex;gap:10px;">
 
-            .topbar {
-                display: flex;
-
-                justify-content: space-between;
-
-                align-items: center;
-
-                gap: 16px;
-
-                flex-wrap: wrap;
-
-                padding: 20px;
-
-                background: white;
-
-                border-radius: 18px;
-
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-            }
-
-            .user {
-                display: flex;
-
-                gap: 14px;
-
-                align-items: center;
-
-                min-width: 0;
-            }
-
-            .user img {
-                width: 60px;
-                height: 60px;
-
-                border-radius: 50%;
-            }
-
-            .user h1 {
-                margin: 0;
-
-                font-size: 16px;
-            }
-
-            .user p {
-                margin: 0;
-
-                font-size: 13px;
-
-                color: #666;
-
-                overflow: hidden;
-
-                text-overflow: ellipsis;
-            }
-
-            /* botones */
-
-            .actions {
-                display: flex;
-
-                gap: 10px;
-
-                flex-wrap: wrap;
-            }
-
-            .btn {
-                padding: 10px 14px;
-
-                border: none;
-
-                border-radius: 10px;
-
-                cursor: pointer;
-
-                text-decoration: none;
-
-                font-size: 13px;
-
-                transition: 0.2s;
-
-                display: inline-block;
-            }
-
-            .btn:hover {
-                transform: translateY(-2px);
-            }
-
-            .btn-home {
-                background: #111;
-
-                color: white;
-            }
-
-            .btn-logout {
-                background: #dc2626;
-
-                color: white;
-            }
-
-            /* ======================
-CARDS
-====================== */
-
-            .card {
-                background: white;
-
-                padding: 22px;
-
-                border-radius: 18px;
-
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-            }
-
-            .card h2 {
-                margin-top: 0;
-            }
-
-            /* ======================
-GRID
-====================== */
-
-            .grid {
-                display: grid;
-
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-
-                gap: 16px;
-            }
-
-            /* ======================
-ACADEMIAS
-====================== */
-
-            .academy {
-                border-radius: 16px;
-
-                padding: 18px;
-
-                text-decoration: none;
-
-                color: inherit;
-
-                transition: 0.2s;
-
-                display: flex;
-
-                flex-direction: column;
-
-                justify-content: space-between;
-
-                min-height: 140px;
-            }
-
-            .academy:hover {
-                transform: translateY(-4px);
-
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-            }
-
-            /* colores automáticos */
-
-            .academy:nth-child(1) {
-                background: #eef2ff;
-            }
-
-            .academy:nth-child(2) {
-                background: #dcfce7;
-            }
-
-            .academy:nth-child(3) {
-                background: #fce7f3;
-            }
-
-            .academy:nth-child(4) {
-                background: #fef3c7;
-            }
-
-            .academy:nth-child(5) {
-                background: #ecfeff;
-            }
-
-            .badge {
-                display: inline-block;
-
-                padding: 4px 10px;
-
-                border-radius: 999px;
-
-                font-size: 12px;
-
-                background: white;
-
-                margin-top: 10px;
-            }
-
-            .academy-footer {
-                display: flex;
-
-                justify-content: space-between;
-
-                align-items: center;
-
-                margin-top: 18px;
-
-                font-size: 13px;
-            }
-
-            .verde {
-                color: green;
-
-                font-weight: bold;
-            }
-
-            .rojo {
-                color: red;
-
-                font-weight: bold;
-            }
-
-            .warning {
-                background: #fff4d6;
-
-                padding: 12px;
-
-                border-radius: 10px;
-
-                margin-top: 12px;
-            }
-
-            /* ======================
-MOBILE
-====================== */
-
-            @media (max-width: 640px) {
-                .topbar {
-                    flex-direction: column;
-
-                    align-items: flex-start;
-                }
-
-                .actions {
-                    width: 100%;
-                }
-
-                .actions .btn {
-                    flex: 1;
-
-                    text-align: center;
-                }
-
-                body {
-                    padding: 14px;
-                }
-            }
-        </style>
-    </head>
-
-    <body>
-        <div class="container">
-            <!-- HEADER -->
-
-            <div class="topbar">
-                <div id="usuario" class="user">Cargando...</div>
-
-                <div class="actions">
-                    <a href="/" class="btn
-btn-home"> 🏠 Home </a>
-
-                    <button
-                        id="logout"
-                        class="btn
-btn-logout"
-                        style="
-display:none
+<a
+href="/"
+class="btn"
+style="
+background:black;
+color:white;
+text-decoration:none;
 "
-                    >
-                        Cerrar sesión
-                    </button>
-                </div>
-            </div>
+>
 
-            <!-- MIS ACADEMIAS -->
+🏠 Home
 
-            <div class="card">
-                <h2>Mis academias</h2>
+</a>
 
-                <p id="contador"></p>
 
-                <div id="alerta"></div>
+<button
 
-                <div id="misAcademias" class="grid">Cargando...</div>
-            </div>
+id="logout"
 
-            <!-- DISPONIBLES -->
+class="btn btn-logout"
 
-            <div class="card">
-                <h2>Academias disponibles</h2>
+style="display:none"
 
-                <div id="academias" class="grid">Cargando...</div>
-            </div>
-        </div>
+>
 
-        <script type="module">
-            import { supabase } from "/src/lib/supabase.ts";
+Cerrar sesión
 
-            /* ======================
+</button>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+
+Mis academias
+
+</h2>
+
+<p id="contador"></p>
+
+<div id="misAcademias"
+class="grid">
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+
+Academias disponibles
+
+</h2>
+
+<div id="academias"
+class="grid">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script type="module">
+
+import {
+
+supabase
+
+}
+
+from "/src/lib/supabase.ts";
+
+
+import {
+
+academiasStore,
+
+loadAcademias
+
+}
+
+from "/src/lib/academiasStore.ts";
+
+
+
+/* ===================
 SESION
-====================== */
+=================== */
 
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
+const {
 
-            if (!session) {
-                window.location = "/login";
-            }
+data:{session}
 
-            const email = session.user.email;
+}
 
-            const nombre = session.user.user_metadata.full_name;
+=
 
-            const foto = session.user.user_metadata.avatar_url;
+await supabase
+.auth
+.getSession();
 
-            document.getElementById("usuario").innerHTML = `
 
-<img src="${foto}">
+
+if(
+!session
+){
+
+window.location.href="/";
+
+}
+
+
+
+const usuario=
+
+document.getElementById(
+"usuario"
+);
+
+
+usuario.innerHTML=
+
+`
+
+<img src="${
+session.user.user_metadata.avatar_url
+}">
 
 
 <div>
 
-<h1>
+<h3>
 
-${nombre}
+${
+session.user.user_metadata.full_name
+}
 
-</h1>
+</h3>
 
 
 <p>
 
-${email}
+${session.user.email}
 
 </p>
 
@@ -386,96 +297,118 @@ ${email}
 
 `;
 
-            document.getElementById("logout").style.display = "inline-block";
 
-            document
 
-                .getElementById("logout")
+const logout=
 
-                .addEventListener(
-                    "click",
+document.getElementById(
+"logout"
+);
 
-                    async () => {
-                        await supabase.auth.signOut();
+logout.style.display=
+"inline-block";
 
-                        window.location = "/";
-                    },
-                );
 
-            /* ======================
-MIS INSCRIPCIONES
-====================== */
+logout.addEventListener(
 
-            const { data: misAcademias } = await supabase
+"click",
 
-                .from("inscripciones")
+async()=>{
 
-                .select(
-                    `
-*,
+await supabase.auth.signOut();
+
+window.location.href="/";
+
+}
+
+);
+
+
+
+/* ===================
+MIS ACADEMIAS
+=================== */
+
+const {
+
+data:misAcademias
+
+}
+
+=
+
+await supabase
+
+.from(
+"inscripciones"
+)
+
+.select(
+
+`
 
 academias(
 
 nombre,
 slug,
-categoria
+categoria,
+ruta_categoria
 
 )
 
-`,
-                )
+`
 
-                .eq("student_email", email)
+)
 
-                .eq("estado", "activa");
+.eq(
+"student_email",
+session.user.email
+)
 
-            const total = misAcademias?.length ?? 0;
+.eq(
+"estado",
+"activa"
+);
 
-            document.getElementById("contador").innerHTML = `
 
-Inscritas:
+
+document.getElementById(
+"contador"
+).innerHTML=
+
+`
 
 <b>
 
-${total}
+${misAcademias?.length ?? 0}
 
 de 2
 
 </b>
 
-`;
-
-            if (total === 1) {
-                document.getElementById("alerta").innerHTML = `
-
-<div class="warning">
-
-Te falta
-1 academia
-
-para completar
-las inscripciones.
-
-</div>
+academias inscritas
 
 `;
-            }
 
-            document.getElementById("misAcademias").innerHTML =
-                misAcademias
 
-                    ?.map(
-                        (a) => `
+
+document.getElementById(
+"misAcademias"
+).innerHTML=
+
+misAcademias
+
+?.map(
+
+(a)=>`
 
 <a
 
-href="/${a.academias.slug}"
+href="/categories/${a.academias.ruta_categoria}/${a.academias.slug}"
 
 class="academy"
 
 >
-
-<div>
 
 <h3>
 
@@ -490,21 +423,14 @@ ${a.academias.categoria}
 
 </span>
 
-</div>
 
-
-<div
-class="
-academy-footer
-"
->
+<div class="academy-footer">
 
 <span class="verde">
 
 Inscrito
 
 </span>
-
 
 <span>
 
@@ -516,96 +442,98 @@ Abrir →
 
 </a>
 
-`,
-                    )
+`
 
-                    .join("") || "No tienes academias";
+)
 
-            /* ======================
+.join("")
+
+||
+
+"Sin academias";
+
+
+
+/* ===================
 ACADEMIAS DISPONIBLES
-====================== */
+=================== */
 
-            const { data: academias } = await supabase
+await loadAcademias();
 
-                .from("academias")
+const academias=
 
-                .select("*")
+academiasStore.get();
 
-                .eq("activa", true);
 
-            let html = "";
 
-            for (const academia of academias ?? []) {
-                const { count } = await supabase
+document.getElementById(
+"academias"
+).innerHTML=
 
-                    .from("inscripciones")
+academias
 
-                    .select(
-                        "*",
+.map(
 
-                        {
-                            count: "exact",
+(a)=>{
 
-                            head: true,
-                        },
-                    )
 
-                    .eq("academia_id", academia.id)
+const disponibles=
 
-                    .eq("estado", "activa");
+a.cupo_maximo
 
-                const disponibles = academia.cupo_maximo - (count ?? 0);
+-
 
-                html += `
+a.inscritos_actuales;
+
+
+
+return`
 
 <a
 
-href="/${academia.slug}"
+href="/categories/${a.ruta_categoria}/${a.slug}"
 
 class="academy"
 
 >
 
-<div>
-
 <h3>
 
-${academia.nombre}
+${a.nombre}
 
 </h3>
 
 
 <span class="badge">
 
-${academia.categoria}
+${a.categoria}
 
 </span>
 
-</div>
 
-
-
-<div
-class="
-academy-footer
-"
->
+<div class="academy-footer">
 
 ${
-    disponibles > 0
-        ? `<span class="verde">
+disponibles>0
+
+?
+
+`<span class="verde">
 
 ${disponibles}
 cupos
 
 </span>`
-        : `<span class="rojo">
+
+:
+
+`<span class="rojo">
 
 SIN CUPOS
 
 </span>`
-}
 
+}
 
 
 <span>
@@ -616,13 +544,17 @@ Ver →
 
 </div>
 
-
 </a>
 
 `;
-            }
 
-            document.getElementById("academias").innerHTML = html;
-        </script>
-    </body>
+}
+
+)
+
+.join("");
+
+</script>
+
+</body>
 </html>

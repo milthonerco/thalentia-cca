@@ -4,24 +4,43 @@ import { supabase } from "./supabase";
 export const academiasStore =
 atom<any[]>([]);
 
+export const academiasLoaded =
+atom(false);
 
-export async function
-loadAcademias(){
+
+export async function loadAcademias(){
 
 if(
-academiasStore.get().length>0
+academiasLoaded.get()
 )return;
 
 
-const {data}
+
+const {
+
+data,
+error
+
+}
+
 =
+
 await supabase
 
 .from(
 "academias"
 )
 
-.select("*")
+.select(`
+id,
+nombre,
+slug,
+ruta_categoria,
+categoria,
+cupo_maximo,
+inscritos_actuales,
+activa
+`)
 
 .eq(
 "activa",
@@ -29,8 +48,27 @@ true
 );
 
 
+
+if(
+error
+){
+
+console.error(
+error
+);
+
+return;
+
+}
+
+
+
 academiasStore.set(
 data ?? []
+);
+
+academiasLoaded.set(
+true
 );
 
 }
