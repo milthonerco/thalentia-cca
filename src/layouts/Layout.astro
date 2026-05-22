@@ -3,6 +3,8 @@ import Footer from "../components/Footer.astro";
 import "../styles/global.css";
 const { children } = Astro.props;
 import UserMenu from "../components/UserMenu.astro";
+import ProfileSetup
+from "../components/ProfileSetup.astro";
 ---
 
 <!doctype html>
@@ -16,6 +18,7 @@ import UserMenu from "../components/UserMenu.astro";
       <slot />
     <Footer />
     <UserMenu />
+    <ProfileSetup/>
     <script type="module" src="/src/scripts/initAuth.ts"></script>
   </body>
 </html>
