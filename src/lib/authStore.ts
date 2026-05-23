@@ -1,17 +1,25 @@
-import { atom } from "nanostores";
-import { supabase } from "./supabase";
+import { atom }
+from "nanostores";
+
+import {
+supabase
+}
+from "./supabase";
+
 
 export const authStore =
 atom<any>(null);
 
 
-export const authManager = {
+export const authManager={
 
 async init(){
 
 const {
 
-data:{session}
+data:{
+session
+}
 
 }
 
@@ -20,7 +28,6 @@ data:{session}
 await supabase
 .auth
 .getSession();
-
 
 
 const user =
@@ -33,9 +40,7 @@ VALIDAR DOMINIO
 
 if(
 
-user?.email
-
-&&
+user?.email &&
 
 !user.email.endsWith(
 "@cca.edu.co"
@@ -57,18 +62,33 @@ return;
 
 
 /*
-GUARDAR SOLO USER
-NO SESSION
+GUARDAR USER
 */
 
 authStore.set(
-user
-?? null
+user ?? null
 );
 
 
+if(user?.email){
 
-supabase.auth.onAuthStateChange(
+localStorage.setItem(
+
+"emailUsuario",
+
+user.email
+
+);
+
+}
+
+
+/*
+CAMBIOS SESION
+*/
+
+supabase.auth
+.onAuthStateChange(
 
 async(
 _event,
@@ -79,41 +99,22 @@ const user=
 session?.user;
 
 
-
-if(
-
-user?.email
-
-&&
-
-!user.email.endsWith(
-"@cca.edu.co"
-)
-
-){
-
-await supabase
-.auth
-.signOut();
-
 authStore.set(
-null
+user ?? null
 );
 
-return;
+
+if(user?.email){
+
+localStorage.setItem(
+
+"emailUsuario",
+
+user.email
+
+);
 
 }
-
-
-
-/*
-ACTUALIZAR STORE
-*/
-
-authStore.set(
-user
-?? null
-);
 
 }
 
