@@ -4,49 +4,49 @@ import CategoryWithGallery from "../../../components/CategoryWithGallery.astro";
 import FloatingMenu from "../../../components/FloatingMenu.astro";
 import Layout from "../../../layouts/Layout.astro";
 
+export const prerender = true; // ← AGREGA ESTO
+
 export async function getStaticPaths() {
-  const items = await getCollection('items');
-  return items.map(item => ({
+  const items = await getCollection("items");
+
+  return items.map((item) => ({
     params: {
       category: item.data.category,
       item: item.id,
     },
+    props: { item }, // Pasar el item como prop
   }));
 }
 
-const { category, item } = Astro.params;
-const itemsAll = await getCollection('items');
-const itemsInCategory = itemsAll.filter(i => i.data.category === category);
-const currentItem = itemsInCategory.find(i => i.id === item);
+const { category } = Astro.params;
+const { item: currentItem } = Astro.props;
 
-if (!currentItem) {
-  throw new Error(`Item no encontrado: category=${category}, item=${item}`);
-}
+const itemsAll = await getCollection("items");
+const itemsInCategory = itemsAll.filter(
+  (i) => i.data.category === category
+);
 
-const categoryDescription = currentItem.data.description ?? '';
-const categoryTitle = category; 
+const categoryDescription = currentItem.data.description ?? "";
+
+const categoryTitle = category
+  .replace(/-/g, " ")
+  .replace(/\b\w/g, c => c.toUpperCase());
 ---
+
 <html>
   <body>
     <Layout>
-    <main class="pb-20 ">
-      <CategoryWithGallery 
-        itemsInCategory={itemsInCategory}
-        categoryInfo={{ title: categoryTitle, description: categoryDescription }}
-        activeItemSlug={item}
-      />
-    </main>
-    
-    <FloatingMenu/>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const floatingMenu = document.querySelector('#floatingMenu')
-        if (floatingMenu) {
-          floatingMenu.classList.remove('hidden')
-        }
-      });
-    </script>
+      <main class="pb-20">
+        <CategoryWithGallery
+          itemsInCategory={itemsInCategory}
+          categoryInfo={{
+            title: categoryTitle,
+            description: categoryDescription,
+          }}
+          activeItemSlug={currentItem.id}
+        />
+      </main>
+      <FloatingMenu />
     </Layout>
   </body>
-
 </html>
