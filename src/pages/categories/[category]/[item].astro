@@ -9,7 +9,7 @@ export async function getStaticPaths() {
   return items.map(item => ({
     params: {
       category: item.data.category,
-      item: item.slug,
+      item: item.id,
     },
   }));
 }
@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 const { category, item } = Astro.params;
 const itemsAll = await getCollection('items');
 const itemsInCategory = itemsAll.filter(i => i.data.category === category);
-const currentItem = itemsInCategory.find(i => i.slug === item);
+const currentItem = itemsInCategory.find(i => i.id === item);
 
 if (!currentItem) {
   throw new Error(`Item no encontrado: category=${category}, item=${item}`);

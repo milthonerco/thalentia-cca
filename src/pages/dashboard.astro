@@ -3,558 +3,154 @@ export const prerender = false;
 ---
 
 <html lang="es">
-<head>
+    <head>
+        <meta charset="UTF-8" />
 
-<meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1"/>
+        <title>Dashboard</title>
 
-<title>Dashboard</title>
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui;
+                background: #f5f6f8;
+                margin: 0;
+                padding: 24px;
+            }
 
-<style>
+            .container {
+                max-width: 1100px;
+                margin: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+            }
 
-body{
-font-family:ui-sans-serif,system-ui;
-background:#f5f6f8;
-margin:0;
-padding:24px;
-}
+            .topbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px;
+                background: white;
+                border-radius: 18px;
+            }
 
-.container{
-max-width:1100px;
-margin:auto;
-display:flex;
-flex-direction:column;
-gap:18px;
-}
+            .user {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+            }
 
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px;
-background:white;
-border-radius:18px;
-}
+            .user img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
 
-.user{
-display:flex;
-gap:14px;
-align-items:center;
-}
+            .card {
+                background: white;
+                padding: 22px;
+                border-radius: 18px;
+            }
 
-.user img{
-width:60px;
-height:60px;
-border-radius:50%;
-}
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 16px;
+            }
 
-.card{
-background:white;
-padding:22px;
-border-radius:18px;
-}
+            .academy {
+                padding: 18px;
+                border-radius: 16px;
+                background: #fff;
+                text-decoration: none;
+                color: black;
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+            }
 
-.grid{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(240px,1fr));
+            .badge {
+                padding: 4px 10px;
+                background: #eee;
+                border-radius: 999px;
+                font-size: 12px;
+            }
 
-gap:16px;
-}
+            .academy-footer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 14px;
+            }
 
-.academy{
-padding:18px;
-border-radius:16px;
-background:#fff;
-text-decoration:none;
-color:black;
-transition:.2s;
-}
+            .verde {
+                color: green;
+                font-weight: bold;
+            }
 
-.academy:hover{
-transform:translateY(-3px);
-}
+            .rojo {
+                color: red;
+                font-weight: bold;
+            }
 
-.badge{
-padding:4px 10px;
-background:#eee;
-border-radius:999px;
-font-size:12px;
-}
+            .btn {
+                padding: 10px 14px;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+            }
 
-.academy-footer{
-display:flex;
-justify-content:space-between;
-margin-top:14px;
-}
+            .btn-logout {
+                background: #dc2626;
+                color: white;
+            }
+        </style>
+    </head>
 
-.verde{
-color:green;
-font-weight:bold;
-}
+    <body>
+        <div class="container">
+            <div class="topbar">
+                <div id="usuario" class="user">Cargando...</div>
 
-.rojo{
-color:red;
-font-weight:bold;
-}
-
-.btn{
-padding:10px 14px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
-
-.btn-logout{
-background:#dc2626;
-color:white;
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-<div class="container">
-
-
-<div class="topbar">
-
-<div
-id="usuario"
-class="user"
->
-
-Cargando...
-
-</div>
-
-
-<div style="display:flex;gap:10px;">
-
-<a
-href="/"
-class="btn"
-style="
+                <div style="display:flex;gap:10px;">
+                    <a
+                        href="/"
+                        class="btn"
+                        style="
 background:black;
 color:white;
 text-decoration:none;
 "
->
-
-🏠 Home
-
-</a>
-
-
-<button
-
-id="logout"
-
-class="btn btn-logout"
-
-style="display:none"
-
->
-
-Cerrar sesión
-
-</button>
-
-</div>
-
-</div>
-
-
-
-<div class="card">
-
-<h2>
-
-Mis academias
-
-</h2>
-
-<p id="contador"></p>
-
-<div id="misAcademias"
-class="grid">
-
-</div>
-
-</div>
-
-
-
-<div class="card">
-
-<h2>
-
-Academias disponibles
-
-</h2>
-
-<div id="academias"
-class="grid">
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<script type="module">
-
-import {
-
-supabase
-
-}
-
-from "/src/lib/supabase.ts";
-
-
-import {
-
-academiasStore,
-
-loadAcademias
-
-}
-
-from "/src/lib/academiasStore.ts";
-
-
-
-/* ===================
-SESION
-=================== */
-
-const {
-
-data:{session}
-
-}
-
-=
-
-await supabase
-.auth
-.getSession();
-
-
-
-if(
-!session
-){
-
-window.location.href="/";
-
-}
-
-
-
-const usuario=
-
-document.getElementById(
-"usuario"
-);
-
-
-usuario.innerHTML=
-
-`
-
-<img src="${
-session.user.user_metadata.avatar_url
-}">
-
-
-<div>
-
-<h3>
-
-${
-session.user.user_metadata.full_name
-}
-
-</h3>
-
-
-<p>
-
-${session.user.email}
-
-</p>
-
-</div>
-
-`;
-
-
-
-const logout=
-
-document.getElementById(
-"logout"
-);
-
-logout.style.display=
-"inline-block";
-
-
-logout.addEventListener(
-
-"click",
-
-async()=>{
-
-await supabase.auth.signOut();
-
-window.location.href="/";
-
-}
-
-);
-
-
-
-/* ===================
-MIS ACADEMIAS
-=================== */
-
-const {
-
-data:misAcademias
-
-}
-
-=
-
-await supabase
-
-.from(
-"inscripciones"
-)
-
-.select(
-
-`
-
-academias(
-
-nombre,
-slug,
-categoria,
-ruta_categoria
-
-)
-
-`
-
-)
-
-.eq(
-"student_email",
-session.user.email
-)
-
-.eq(
-"estado",
-"activa"
-);
-
-
-
-document.getElementById(
-"contador"
-).innerHTML=
-
-`
-
-<b>
-
-${misAcademias?.length ?? 0}
-
-de 2
-
-</b>
-
-academias inscritas
-
-`;
-
-
-
-document.getElementById(
-"misAcademias"
-).innerHTML=
-
-misAcademias
-
-?.map(
-
-(a)=>`
-
-<a
-
-href="/categories/${a.academias.ruta_categoria}/${a.academias.slug}"
-
-class="academy"
-
->
-
-<h3>
-
-${a.academias.nombre}
-
-</h3>
-
-
-<span class="badge">
-
-${a.academias.categoria}
-
-</span>
-
-
-<div class="academy-footer">
-
-<span class="verde">
-
-Inscrito
-
-</span>
-
-<span>
-
-Abrir →
-
-</span>
-
-</div>
-
-</a>
-
-`
-
-)
-
-.join("")
-
-||
-
-"Sin academias";
-
-
-
-/* ===================
-ACADEMIAS DISPONIBLES
-=================== */
-
-await loadAcademias();
-
-const academias=
-
-academiasStore.get();
-
-
-
-document.getElementById(
-"academias"
-).innerHTML=
-
-academias
-
-.map(
-
-(a)=>{
-
-
-const disponibles=
-
-a.cupo_maximo
-
--
-
-a.inscritos_actuales;
-
-
-
-return`
-
-<a
-
-href="/categories/${a.ruta_categoria}/${a.slug}"
-
-class="academy"
-
->
-
-<h3>
-
-${a.nombre}
-
-</h3>
-
-
-<span class="badge">
-
-${a.categoria}
-
-</span>
-
-
-<div class="academy-footer">
-
-${
-disponibles>0
-
-?
-
-`<span class="verde">
-
-${disponibles}
-cupos
-
-</span>`
-
-:
-
-`<span class="rojo">
-
-SIN CUPOS
-
-</span>`
-
-}
-
-
-<span>
-
-Ver →
-
-</span>
-
-</div>
-
-</a>
-
-`;
-
-}
-
-)
-
-.join("");
-
-</script>
-
-</body>
+                    >
+                        🏠 Home
+                    </a>
+
+                    <button
+                        id="logout"
+                        class="btn btn-logout"
+                        style="display:none"
+                    >
+                        Cerrar sesión
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Mis academias</h2>
+
+                <p id="contador"></p>
+
+                <div id="misAcademias" class="grid"></div>
+            </div>
+
+            <div class="card">
+                <h2>Academias disponibles</h2>
+
+                <div id="academias" class="grid"></div>
+            </div>
+        </div>
+
+        <script>
+            import "../scripts/dashboard.js";
+        </script>
+    </body>
 </html>
