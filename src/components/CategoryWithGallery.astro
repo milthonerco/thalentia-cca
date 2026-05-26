@@ -5,7 +5,7 @@ const { itemsInCategory, categoryInfo, activeItemSlug } = Astro.props;
 
 type Item = (typeof itemsInCategory)[number];
 const firstItem =
-  itemsInCategory.find((item: Item) => item.slug === activeItemSlug)?.data ??
+  itemsInCategory.find((item: Item) => item.id === activeItemSlug)?.data ??
   itemsInCategory[0].data;
 ---
 
@@ -73,7 +73,7 @@ const firstItem =
             data-title={item.data.title}
             data-description={item.data.description}
             data-image={item.data.image}
-            data-link={`/categories/${item.data.category}/${item.slug}`}
+            data-link={`/categories/${item.data.category}/${item.id}`}
             aria-label={`Cambiar a ${item.data.title}`}
             class="focus:outline-none"
           >
@@ -89,240 +89,114 @@ const firstItem =
   </div>
 
   <script is:inline>
+    const titleEl = document.getElementById("selected-title");
 
-const titleEl =
-document.getElementById(
-"selected-title"
-);
+    const descEl = document.getElementById("selected-description");
 
-const descEl =
-document.getElementById(
-"selected-description"
-);
+    const imageEl = document.getElementById("selected-image");
 
-const imageEl =
-document.getElementById(
-"selected-image"
-);
+    const buttons = document.querySelectorAll("button");
 
-const buttons =
-document.querySelectorAll(
-"button"
-);
-
-
-/*
+    /*
 CAMBIO ACADEMIA
 */
 
-function updateContent({
+    function updateContent({ title, description, image, link }) {
+      titleEl.textContent = title;
 
-title,
-description,
-image,
-link
+      descEl.textContent = description;
 
-}){
+      imageEl.classList.add("opacity-0");
 
-titleEl.textContent =
-title;
+      setTimeout(() => {
+        imageEl.src = image;
 
-descEl.textContent =
-description;
+        imageEl.alt = title;
 
+        imageEl.classList.remove("opacity-0");
+      }, 200);
 
-imageEl.classList.add(
-"opacity-0"
-);
+      window.history.pushState({}, "", link);
+    }
 
+    buttons.forEach((btn) => {
+      if (btn.id !== "btn-inscribirse") {
+        btn.addEventListener(
+          "click",
 
-setTimeout(()=>{
+          () => {
+            const { title, description, image, link } = btn.dataset;
 
-imageEl.src =
-image;
+            updateContent({
+              title,
+              description,
+              image,
+              link,
+            });
+          },
+        );
+      }
+    });
 
-imageEl.alt =
-title;
-
-imageEl.classList.remove(
-"opacity-0"
-);
-
-},200);
-
-
-window.history.pushState(
-{},
-"",
-link
-);
-
-}
-
-
-buttons.forEach((btn)=>{
-
-if(
-
-btn.id !==
-"btn-inscribirse"
-
-){
-
-btn.addEventListener(
-
-"click",
-
-()=>{
-
-const {
-
-title,
-description,
-image,
-link
-
-}
-=
-btn.dataset;
-
-
-updateContent({
-
-title,
-description,
-image,
-link
-
-});
-
-}
-
-);
-
-}
-
-});
-
-
-
-/*
+    /*
 INSCRIPCIÓN
 */
 
-const btnInscribir =
-document.getElementById(
-"btn-inscribirse"
-);
+    const btnInscribir = document.getElementById("btn-inscribirse");
 
-const mensaje =
-document.getElementById(
-"mensaje-inscripcion"
-);
+    const mensaje = document.getElementById("mensaje-inscripcion");
 
+    btnInscribir?.addEventListener(
+      "click",
 
-btnInscribir
-?.addEventListener(
+      async () => {
+        if (mensaje) {
+          mensaje.textContent = "Validando...";
 
-"click",
+          mensaje.className = "mt-3 text-[#507687]";
+        }
 
-async()=>{
+        const slug = window.location.pathname.split("/").pop();
 
-if(mensaje){
+        const email = localStorage.getItem("emailUsuario");
 
-mensaje.textContent =
-"Validando...";
+        try {
+          const response = await fetch(
+            "/api/inscribirse",
 
-mensaje.className =
-"mt-3 text-[#507687]";
+            {
+              method: "POST",
 
-}
+              headers: {
+                "Content-Type": "application/json",
+              },
 
+              body: JSON.stringify({
+                slug,
+                email,
+              }),
+            },
+          );
 
-const slug =
+          const data = await response.json();
 
-window.location.pathname
-.split("/")
-.pop();
+          if (!response.ok) {
+            mensaje.textContent = data.error;
 
+            mensaje.className = "mt-3 text-red-500";
 
-const email =
+            return;
+          }
 
-localStorage.getItem(
-"emailUsuario"
-);
+          mensaje.textContent = "Inscripción realizada correctamente";
 
+          mensaje.className = "mt-3 text-green-600";
+        } catch {
+          mensaje.textContent = "Error al conectar con servidor";
 
-try{
-
-const response =
-
-await fetch(
-
-"/api/inscribirse",
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/json"
-
-},
-
-body:
-JSON.stringify({
-
-slug,
-email
-
-})
-
-}
-
-);
-
-
-const data =
-await response.json();
-
-
-if(!response.ok){
-
-mensaje.textContent =
-data.error;
-
-mensaje.className =
-"mt-3 text-red-500";
-
-return;
-
-}
-
-
-mensaje.textContent =
-
-"Inscripción realizada correctamente";
-
-mensaje.className =
-"mt-3 text-green-600";
-
-
-}catch{
-
-mensaje.textContent =
-
-"Error al conectar con servidor";
-
-mensaje.className =
-"mt-3 text-red-500";
-
-}
-
-}
-
-);
-
-</script>
+          mensaje.className = "mt-3 text-red-500";
+        }
+      },
+    );
+  </script></
+>
