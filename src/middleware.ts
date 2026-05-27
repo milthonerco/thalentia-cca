@@ -1,11 +1,5 @@
-import { defineMiddleware }
-from "astro/middleware";
+import { defineMiddleware } from "astro/middleware";
 
-export const onRequest =
-defineMiddleware(
-
-async(_,next)=>{
-
-return next();
-
+export const onRequest = defineMiddleware(async (_, next) => {
+  return next();
 });

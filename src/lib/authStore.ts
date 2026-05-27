@@ -1,125 +1,125 @@
 import { atom }
-from "nanostores";
+    from "nanostores";
 
 import {
-supabase
+    supabase
 }
-from "./supabase";
+    from "./supabase";
 
 
 export const authStore =
-atom<any>(null);
+    atom<any>(null);
 
 
-export const authManager={
+export const authManager = {
 
-async init(){
+    async init() {
 
-const {
+        const {
 
-data:{
-session
-}
+            data: {
+                session
+            }
 
-}
+        }
 
-=
+            =
 
-await supabase
-.auth
-.getSession();
-
-
-const user =
-session?.user;
+            await supabase
+                .auth
+                .getSession();
 
 
-/*
-VALIDAR DOMINIO
-*/
-
-if(
-
-user?.email &&
-
-!user.email.endsWith(
-"@cca.edu.co"
-)
-
-){
-
-await supabase
-.auth
-.signOut();
-
-authStore.set(
-null
-);
-
-return;
-
-}
+        const user =
+            session?.user;
 
 
-/*
-GUARDAR USER
-*/
+        /*
+        VALIDAR DOMINIO
+        */
 
-authStore.set(
-user ?? null
-);
+        if (
 
+            user?.email &&
 
-if(user?.email){
+            !user.email.endsWith(
+                "@cca.edu.co"
+            )
 
-localStorage.setItem(
+        ) {
 
-"emailUsuario",
+            await supabase
+                .auth
+                .signOut();
 
-user.email
+            authStore.set(
+                null
+            );
 
-);
+            return;
 
-}
-
-
-/*
-CAMBIOS SESION
-*/
-
-supabase.auth
-.onAuthStateChange(
-
-async(
-_event,
-session
-)=>{
-
-const user=
-session?.user;
+        }
 
 
-authStore.set(
-user ?? null
-);
+        /*
+        GUARDAR USER
+        */
+
+        authStore.set(
+            user ?? null
+        );
 
 
-if(user?.email){
+        if (user?.email) {
 
-localStorage.setItem(
+            localStorage.setItem(
 
-"emailUsuario",
+                "emailUsuario",
 
-user.email
+                user.email
 
-);
+            );
 
-}
+        }
 
-}
 
-);
+        /*
+        CAMBIOS SESION
+        */
 
-}
+        supabase.auth
+            .onAuthStateChange(
+
+                async (
+                    _event,
+                    session
+                ) => {
+
+                    const user =
+                        session?.user;
+
+
+                    authStore.set(
+                        user ?? null
+                    );
+
+
+                    if (user?.email) {
+
+                        localStorage.setItem(
+
+                            "emailUsuario",
+
+                            user.email
+
+                        );
+
+                    }
+
+                }
+
+            );
+
+    }
 
 };

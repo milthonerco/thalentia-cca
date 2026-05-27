@@ -21,10 +21,8 @@
     Mi cuenta
   </h3>
 
-  <!-- EMAIL -->
   <p id="userEmail" class="text-xs sm:text-sm text-gray-600 mb-3"></p>
 
-  <!-- ACADEMIAS -->
   <div>
     <p class="text-xs sm:text-sm font-semibold mb-2">
       Mis academias
@@ -33,24 +31,30 @@
     <ul id="academyList" class="space-y-1"></ul>
   </div>
 
-  <!-- BOTONES -->
-  <button
-    id="manageBtn"
-    class="w-full mt-4 bg-black text-white py-2 rounded text-xs sm:text-sm"
+  <a
+    id="btn-panel-estudiante"
+    href="/dashboard"
+    class="hidden w-full block text-center mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-xs sm:text-sm font-medium transition-colors"
   >
-    Administrar
-  </button>
+    🎓 Mi Panel Estudiante
+  </a>
+
+  <a
+    id="btn-panel-admin"
+    href="/admin/dashboard"
+    class="hidden w-full block text-center mt-4 bg-amber-600 hover:bg-amber-700 text-white py-2 rounded text-xs sm:text-sm font-medium transition-colors"
+  >
+    🛡️ Panel Administrador
+  </a>
 
   <button
     id="logoutBtn"
-    class="w-full mt-2 border border-gray-300 py-2 rounded text-xs sm:text-sm"
+    class="w-full mt-2 border border-gray-300 py-2 rounded text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition-colors"
   >
     Cerrar sesión
   </button>
 </div>
 
 <script>
-
-import "../scripts/userMenu";
-
+  import "../scripts/userMenu";
 </script>
