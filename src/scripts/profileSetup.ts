@@ -7,11 +7,9 @@ const guardar = document.querySelector<HTMLButtonElement>("#guardarPerfil");
 const curso = document.querySelector<HTMLSelectElement>("#curso");
 
 authStore.subscribe(async (user) => {
-  console.log("------------------------------------------------");
-  console.log("[ProfileSetup] 🔄 Store detectó cambio de usuario:", user?.email);
+
 
   if (!user || !user.email) {
-    console.log("[ProfileSetup] 👤 No hay usuario logueado. Escondiendo modal.");
     modal?.classList.add("hidden");
     return;
   }
@@ -21,27 +19,22 @@ authStore.subscribe(async (user) => {
   // Consultamos el helper optimizado (una sola petición a la base de datos)
   const { isAdmin, isStudent, perfil } = await checkUserRole(cleanEmail);
 
-  console.log(`[ProfileSetup] 🛡️ Evaluación de permisos para ${cleanEmail}:`);
-  console.log(`               ¿Es Admin?: ${isAdmin}`);
-  console.log(`               ¿Es Estudiante Activo?: ${isStudent}`);
-  console.log(`               Perfil en BD:`, perfil);
 
   // REGLA 1: Si es Admin, jamás se muestra el modal
   if (isAdmin) {
-    console.log("[ProfileSetup] 🔥 Bloqueo absoluto: Es ADMIN. Escondiendo modal.");
     modal?.classList.add("hidden");
     return;
   }
 
   // REGLA 2: Si es un estudiante y ya tiene curso asignado, se esconde el modal
   if (perfil && perfil.curso) {
-    console.log(`[ProfileSetup] ✅ Estudiante registrado con curso ${perfil.curso}. Escondiendo modal.`);
+  
     modal?.classList.add("hidden");
     return;
   }
 
   // REGLA 3: Si no tiene perfil o no tiene curso, significa que es un estudiante nuevo
-  console.log("[ProfileSetup] ⚠️ Alerta: Registro incompleto o usuario nuevo. Mostrando modal.");
+
   modal?.classList.remove("hidden");
 });
 
@@ -66,6 +59,5 @@ guardar?.addEventListener("click", async () => {
     return;
   }
 
-  console.log("[ProfileSetup] 🎉 Estudiante registrado con éxito.");
   modal?.classList.add("hidden");
 });
