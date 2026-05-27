@@ -3,154 +3,47 @@ export const prerender = false;
 ---
 
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard</title>
+</head>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+<body class="bg-[#f6f7fb] m-0 p-4 font-sans">
 
-        <title>Dashboard</title>
+<div class="max-w-[1100px] mx-auto flex flex-col gap-4">
 
-        <style>
-            body {
-                font-family: ui-sans-serif, system-ui;
-                background: #f5f6f8;
-                margin: 0;
-                padding: 24px;
-            }
-
-            .container {
-                max-width: 1100px;
-                margin: auto;
-                display: flex;
-                flex-direction: column;
-                gap: 18px;
-            }
-
-            .topbar {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 20px;
-                background: white;
-                border-radius: 18px;
-            }
-
-            .user {
-                display: flex;
-                gap: 14px;
-                align-items: center;
-            }
-
-            .user img {
-                width: 60px;
-                height: 60px;
-                border-radius: 50%;
-                object-fit: cover;
-            }
-
-            .card {
-                background: white;
-                padding: 22px;
-                border-radius: 18px;
-            }
-
-            .grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                gap: 16px;
-            }
-
-            .academy {
-                padding: 18px;
-                border-radius: 16px;
-                background: #fff;
-                text-decoration: none;
-                color: black;
-                box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-            }
-
-            .badge {
-                padding: 4px 10px;
-                background: #eee;
-                border-radius: 999px;
-                font-size: 12px;
-            }
-
-            .academy-footer {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 14px;
-            }
-
-            .verde {
-                color: green;
-                font-weight: bold;
-            }
-
-            .rojo {
-                color: red;
-                font-weight: bold;
-            }
-
-            .btn {
-                padding: 10px 14px;
-                border: none;
-                border-radius: 10px;
-                cursor: pointer;
-            }
-
-            .btn-logout {
-                background: #dc2626;
-                color: white;
-            }
-        </style>
-    </head>
-
-    <body>
-        <div class="container">
-            <div class="topbar">
-                <div id="usuario" class="user">Cargando...</div>
-
-                <div style="display:flex;gap:10px;">
-                    <a
-                        href="/"
-                        class="btn"
-                        style="
-background:black;
-color:white;
-text-decoration:none;
-"
-                    >
-                        🏠 Home
-                    </a>
-
-                    <button
-                        id="logout"
-                        class="btn btn-logout"
-                        style="display:none"
-                    >
-                        Cerrar sesión
-                    </button>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Mis academias</h2>
-
-                <p id="contador"></p>
-
-                <div id="misAcademias" class="grid"></div>
-            </div>
-
-            <div class="card">
-                <h2>Academias disponibles</h2>
-
-                <div id="academias" class="grid"></div>
-            </div>
+    <div class="bg-white rounded-2xl p-3.5 flex items-center justify-between gap-3 flex-wrap">
+        <div id="usuario" class="flex items-center gap-3 min-w-[200px]">
+            <span class="text-sm text-gray-500">Cargando usuario...</span>
         </div>
 
-        <script>
-            import "../scripts/dashboard.js";
-        </script>
-    </body>
+        <div class="actions flex gap-2 flex-wrap">
+            <a href="/" class="px-3 py-2 rounded-xl bg-[#111] text-white text-xs inline-flex items-center justify-center no-underline hover:bg-black transition-colors">
+                🏠 Home
+            </a>
+            <button id="logout" class="px-3 py-2 rounded-xl bg-red-600 text-white text-xs items-center justify-center hidden hover:bg-red-700 transition-colors">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm">
+        <h2 class="text-base font-bold m-0 mb-3 text-gray-800">Mis academias</h2>
+        <p id="contador" class="text-sm text-gray-600 mb-3"></p>
+        <div id="misAcademias" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm">
+        <h2 class="text-base font-bold m-0 mb-3 text-gray-800">Academias disponibles</h2>
+        <div id="academias" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>
+
+</div>
+
+<script>
+    import "../scripts/dashboard.js";
+</script>
+
+</body>
 </html>

@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabaseAdmin } from "./supabaseAdmin";
 
 export async function inscribirEstudiante(
 
@@ -8,105 +8,168 @@ slugAcademia:string
 ){
 
 /*
+==========================
 ESTUDIANTE
+==========================
 */
 
-const resultado =
-await supabase
+const {
+
+data:estudiante
+
+}
+
+=
+
+await supabaseAdmin
 
 .from("estudiantes")
 
 .select("*")
 
 .eq(
+
 "email",
+
 email
-);
+
+)
+
+.single();
 
 
-const estudiante =
-resultado.data?.[0];
+if(
 
+!estudiante
 
-if(!estudiante){
+){
 
 throw new Error(
+
 "Perfil estudiante no encontrado"
+
 );
 
 }
 
 
+
 /*
-ACADEMIA
+==========================
+ACADEMIA SEGÚN CURSO
+==========================
 */
 
-const resultadoAcademia =
-await supabase
+const {
+
+data:academias
+
+}
+
+=
+
+await supabaseAdmin
 
 .from("academias")
 
 .select("*")
 
 .eq(
+
 "slug",
-slugAcademia);
+
+slugAcademia
+
+);
 
 
-const academia =
-resultadoAcademia.data?.[0];
 
+if(
 
-if(!academia){
+!academias?.length
+
+){
 
 throw new Error(
+
 "Academia no encontrada"
+
 );
 
 }
 
 
+
 /*
-CURSO PERMITIDO
+BUSCAR ACADEMIA
+PARA EL CURSO
+DEL ESTUDIANTE
 */
 
-const permitido =
-academia.cursos_permitidos
+const academia =
+
+academias.find(
+
+a =>
+
+a.cursos_permitidos
+
 ?.includes(
+
 estudiante.curso
+
+)
+
 );
 
 
-if(!permitido){
+
+if(
+
+!academia
+
+){
 
 throw new Error(
-"Tu curso no puede ingresar"
+
+"Esta academia no está disponible para tu curso"
+
 );
 
 }
 
 
+
 /*
-CUPOS
+==========================
+VALIDAR CUPOS
+==========================
 */
 
 if(
 
 academia.inscritos_actuales
+
 >=
+
 academia.cupo_maximo
 
 ){
 
 throw new Error(
+
 "No hay cupos disponibles"
+
 );
 
 }
 
 
+
 /*
-MAX 2 ACADEMIAS
+==========================
+MÁXIMO 2 ACADEMIAS
+==========================
 */
 
 const {
@@ -117,45 +180,67 @@ count
 
 =
 
-await supabase
+await supabaseAdmin
 
 .from("inscripciones")
 
-.select("*",{
+.select(
+
+"*",
+
+{
 
 count:"exact",
 
 head:true
 
-})
+}
 
-.eq(
-"student_email",
-email
 )
 
 .eq(
+
+"student_email",
+
+email
+
+)
+
+.eq(
+
 "estado",
+
 "activa"
+
 );
+
 
 
 if(
 
-count &&
-count>=2
+count
+
+&&
+
+count >= 2
 
 ){
 
 throw new Error(
+
 "Máximo dos academias"
+
 );
 
 }
 
 
+
 /*
+==========================
 YA INSCRITO
+(SOLO ACTIVAS)
+==========================
 */
 
 const {
@@ -166,36 +251,60 @@ data:existente
 
 =
 
-await supabase
+await supabaseAdmin
 
 .from("inscripciones")
 
-.select("*")
+.select("id")
 
 .eq(
+
 "student_email",
+
 email
+
 )
 
 .eq(
+
 "academia_id",
+
 academia.id
+
+)
+
+.eq(
+
+"estado",
+
+"activa"
+
 )
 
 .maybeSingle();
 
 
-if(existente){
+
+if(
+
+existente
+
+){
 
 throw new Error(
+
 "Ya estás inscrito"
+
 );
 
 }
 
 
+
 /*
-INSERTAR
+==========================
+CREAR INSCRIPCIÓN
+==========================
 */
 
 const {
@@ -206,35 +315,58 @@ error:insertError
 
 =
 
-await supabase
+await supabaseAdmin
 
 .from("inscripciones")
 
 .insert({
 
 student_email:
+
 email,
 
 academia_id:
+
 academia.id,
 
 categoria:
-academia.categoria
+
+academia.categoria,
+
+estado:
+
+"activa"
 
 });
 
 
-if(insertError){
+
+if(
+
+insertError
+
+){
+
+console.error(
+
+insertError
+
+);
 
 throw new Error(
+
 "No fue posible registrar inscripción"
+
 );
 
 }
 
 
+
 /*
-ACTUALIZAR CUPOS
+==========================
+SUMAR CUPO
+==========================
 */
 
 const {
@@ -245,30 +377,46 @@ error:updateError
 
 =
 
-await supabase
+await supabaseAdmin
 
 .from("academias")
 
 .update({
 
 inscritos_actuales:
-academia.inscritos_actuales + 1
+
+academia.inscritos_actuales
+
++
+
+1
 
 })
 
 .eq(
+
 "id",
+
 academia.id
+
 );
 
 
-if(updateError){
+
+if(
+
+updateError
+
+){
 
 throw new Error(
+
 "No fue posible actualizar cupos"
+
 );
 
 }
+
 
 
 return true;

@@ -9,112 +9,122 @@ type Academia = {
     cupo_maximo: number;
     activa: boolean;
     coordinador_email: string | null;
+    cursos_permitidos: number[];
+    ruta_categoria: string;
 };
 
 type AcademiaConCupos = Academia & {
     cuposDisponibles: number;
 };
 
-export async function obtenerCupos():
-Promise<AcademiaConCupos[]> {
+export async function obtenerCupos(
+    email: string
+): Promise<AcademiaConCupos[]> {
 
-    const {
-        data: academias,
-        error
-    } =
+    const { data: estudiante } =
     await supabase
+        .from("estudiantes")
+        .select("curso")
+        .eq("email", email)
+        .single();
 
+    if (!estudiante) return [];
+
+    const { data: academias } =
+    await supabase
         .from("academias")
-
         .select("*")
-
         .eq("activa", true);
 
+    if (!academias) return [];
 
-    if (error) {
+    const filtradas = academias.filter(
 
-        console.error(
-            "Error academias:",
-            error.message
+        a =>
+
+        a.cursos_permitidos?.includes(
+            estudiante.curso
+        )
+
+    );
+
+    if (!filtradas.length) return [];
+
+
+    /*
+    UNA SOLA CONSULTA
+    EN VEZ DE 20 COUNTS
+    */
+
+    const ids = filtradas.map(
+        a => a.id
+    );
+
+    const {
+
+        data: inscripciones
+
+    }
+
+    =
+
+    await supabase
+
+        .from("inscripciones")
+
+        .select(`
+            academia_id,
+            estado
+        `)
+
+        .in(
+            "academia_id",
+            ids
+        )
+
+        .eq(
+            "estado",
+            "activa"
         );
 
-        return [];
-    }
+
+    return filtradas.map(
+
+        academia => {
+
+            const inscritos =
+
+                inscripciones?.filter(
+
+                    i =>
+
+                    i.academia_id
+                    ===
+                    academia.id
+
+                ).length
+
+                ||
+
+                0;
 
 
-    if (!academias) {
+            return {
 
-        return [];
-    }
+                ...academia,
 
+                cuposDisponibles:
 
-    const resultado:
-    AcademiaConCupos[] = [];
+                    academia.cupo_maximo
 
+                    -
 
-    for (const academia of academias) {
+                    inscritos
 
-        const {
-
-            count,
-
-            error: errorCount
+            };
 
         }
 
-        =
-
-        await supabase
-
-            .from("inscripciones")
-
-            .select(
-                "*",
-                {
-                    count: "exact",
-                    head: true
-                }
-            )
-
-            .eq(
-                "academia_id",
-                academia.id
-            )
-
-            .eq(
-                "estado",
-                "activa"
-            );
-
-
-        if (errorCount) {
-
-            console.error(
-                "Error contando:",
-                errorCount.message
-            );
-
-            continue;
-        }
-
-
-        resultado.push({
-
-            ...academia,
-
-            cuposDisponibles:
-
-                academia.cupo_maximo
-
-                -
-
-                (count ?? 0)
-
-        });
-
-    }
-
-
-    return resultado;
+    );
 
 }
