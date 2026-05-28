@@ -2,40 +2,60 @@
 import "../styles/global.css";
 ---
 
-<section class="relative w-full min-h-screen bg-[#FFFCFB] flex flex-col md:flex-row">
+<section
+  class="relative w-full min-h-screen bg-[#FFFCFB] flex flex-col md:flex-row"
+>
   <!-- PANEL DE TEXTO -->
-  <div class="relative z-20 w-full md:w-1/2 bg-white px-6 py-20 flex items-center justify-center">
+  <div
+    class="relative z-20 w-full md:w-1/2 bg-white px-6 py-20 flex items-center justify-center"
+  >
     <div class="max-w-md text-center md:text-left">
       <img
         src="/LogoPequeno.png"
         alt="Thalentia Logo"
         class="w-32 sm:w-40 lg:w-52 mx-auto md:mx-0 mb-10"
       />
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#507687] mb-6 leading-snug">
+      <h1
+        class="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#507687] mb-6 leading-snug"
+      >
         En el CCA, cada estudiante es único.
       </h1>
       <p class="text-[#507687] text-base sm:text-lg lg:text-xl leading-relaxed">
-        Fomentamos sus talentos en un ambiente que impulsa el deporte, el arte
-        y el desarrollo personal. Aquí se vive la pasión por aprender, crear y
-        crecer.
+        Las academias son un espacio pensado para el buen uso del tiempo libre,
+        donde sus hijos encuentran actividades deportivas y artísticas, así como
+        la oportunidad de descubrir nuevos hobbies y desarrollar sus talentos. A
+        través de cada actividad, van construyendo de manera natural hábitos de
+        disciplina, fortaleciendo la constancia, el compromiso y el gusto por
+        hacer las cosas bien. Todo esto en un entorno seguro, que promueve
+        actitudes y relaciones positivas y sanas. Cada tarde se convierte en una
+        experiencia que suma logros y despierta propósitos, ayudando a los
+        estudiantes a crecer con confianza, disfrutar lo que hacen y continuar
+        construyendo su proyecto de vida.
       </p>
     </div>
   </div>
 
   <!-- CARRUSEL DE IMÁGENES -->
-  <div class="relative z-10 w-full md:w-1/2 h-[300px] md:h-auto bg-[#FFFCFB] px-2 md:px-6 py-10 flex items-center md:items-center justify-center">
+  <div
+    class="relative z-10 w-full md:w-1/2 h-[300px] md:h-auto bg-[#FFFCFB] px-2 md:px-6 py-10 flex items-center md:items-center justify-center"
+  >
     <div
       id="carouselWrapper"
       class="flex md:block overflow-x-auto md:overflow-y-auto no-scrollbar h-full md:h-[80vh] md:max-h-[80vh] w-full"
     >
-      <div id="imageTrack" class="flex md:flex-col gap-4 md:gap-6 items-center justify-start">
-        {Array.from({ length: 13 }).map((_, i) => (
-          <img
-            src={`/imgScroll/${i + 1}.png`}
-            class="carousel-img"
-            alt={`img ${i + 1}`}
-          />
-        ))}
+      <div
+        id="imageTrack"
+        class="flex md:flex-col gap-4 md:gap-6 items-center justify-start"
+      >
+        {
+          Array.from({ length: 13 }).map((_, i) => (
+            <img
+              src={`/imgScroll/${i + 1}.png`}
+              class="carousel-img"
+              alt={`img ${i + 1}`}
+            />
+          ))
+        }
       </div>
     </div>
   </div>
@@ -54,7 +74,9 @@ import "../styles/global.css";
     width: 260px;
     height: auto;
     opacity: 0.85;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
     flex-shrink: 0;
   }
 
@@ -69,6 +91,3 @@ import "../styles/global.css";
     }
   }
 </style>
-
-
-
