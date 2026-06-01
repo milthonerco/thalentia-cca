@@ -16,7 +16,7 @@ const btnAdmin = document.getElementById("btn-panel-admin");
 
 // ============= FUNCIÓN DE CIERRE DE SESIÓN UNIFICADA =============
 async function cerrarSesionGlobal() {
-  console.log("[Auth] Ejecutando cierre de sesión unificado y limpieza de caché...");
+
   try {
     // 1. Desloguear de Supabase
     await supabase.auth.signOut();
@@ -92,7 +92,7 @@ async function renderUserMenu() {
     await cargarMisAcademiasMenu(emailAValidar);
 
     const { isAdmin } = await checkUserRole(emailAValidar);
-    console.log(`[UserMenu] Perfil activo: ${emailAValidar} | ¿Es Admin?: ${isAdmin}`);
+
 
     if (isAdmin) {
       btnAdmin?.classList.remove("hidden");

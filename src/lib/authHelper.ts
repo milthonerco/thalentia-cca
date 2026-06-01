@@ -1,7 +1,6 @@
 import { supabase } from "./supabase";
 
 export async function checkUserRole(email: string | undefined) {
-  console.log(`[Helper] 🔍 Consultando rol único para: ${email}`);
   
   if (!email) {
     return { isAdmin: false, isStudent: false, perfil: null };
@@ -21,7 +20,6 @@ export async function checkUserRole(email: string | undefined) {
     return { isAdmin: false, isStudent: false, perfil: null };
   }
 
-  console.log(`[Helper] 📊 Registro encontrado en BD:`, usuario);
 
   // Si no existe el registro en la tabla, es un usuario completamente nuevo
   if (!usuario) {

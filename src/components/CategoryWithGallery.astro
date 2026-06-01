@@ -82,6 +82,7 @@ const firstItem =
             data-edad={item.data.edad}
             data-lugar={item.data.lugar}
             data-horario={item.data.horario}
+            data-abierta={String(item.data.inscripcion_abierta)}
             data-link={`/categories/${item.data.category}/${item.id}`}
             aria-label={`Cambiar a ${item.data.title}`}
             class="academia-btn focus:outline-none relative overflow-hidden rounded shadow group w-20 h-20 md:w-24 md:h-24 flex-shrink-0"
@@ -111,18 +112,30 @@ const firstItem =
     const edadEl = document.getElementById("selected-edad");
     const lugarEl = document.getElementById("selected-lugar");
     const horarioEl = document.getElementById("selected-horario");
+    const mensaje = document.getElementById("mensaje-inscripcion");
 
     /*
     =========================================
     CAMBIO DE ACADEMIA INTERACTIVO
     =========================================
     */
-    function updateContent({ title, description, image, edad, lugar, horario, link }) {
+    function updateContent({ title, description, image, edad, lugar, horario, link, abierta }) {
       titleEl.textContent = title;
       descEl.textContent = description;
       edadEl.textContent = edad;
       lugarEl.textContent = lugar;
       horarioEl.textContent = horario;
+
+      // Resetear o pre-visualizar el estado de la inscripción al cambiar de vista
+      if (mensaje) {
+        if (abierta === "false") {
+          mensaje.textContent = "Las inscripciones están deshabilitadas";
+          mensaje.className = "mt-3 text-sm text-red-500";
+        } else {
+          mensaje.textContent = "";
+          mensaje.className = "mt-3 text-sm text-[#507687]";
+        }
+      }
 
       imageEl.classList.add("opacity-0");
 
@@ -135,14 +148,13 @@ const firstItem =
       window.history.pushState({}, "", link);
     }
 
-    // Usamos el selector específico para las miniaturas para que no interfiera con otros elementos
     const academiaButtons = document.querySelectorAll(".academia-btn");
 
     academiaButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
-        const { title, description, image, edad, lugar, horario, link } = btn.dataset;
+        const { title, description, image, edad, lugar, horario, link, abierta } = btn.dataset;
         
-        updateContent({ title, description, image, edad, lugar, horario, link });
+        updateContent({ title, description, image, edad, lugar, horario, link, abierta });
       });
     });
 
@@ -152,10 +164,12 @@ const firstItem =
     =========================================
     */
     const btnInscribir = document.getElementById("btn-inscribirse");
-    const mensaje = document.getElementById("mensaje-inscripcion");
 
     btnInscribir?.addEventListener("click", async () => {
-      mensaje.textContent = "Validando...";
+      if (mensaje) {
+        mensaje.textContent = "Validando...";
+        mensaje.className = "mt-3 text-sm text-[#507687]";
+      }
 
       const slug = window.location.pathname.split("/").pop();
       const email = localStorage.getItem("emailUsuario");
@@ -172,16 +186,22 @@ const firstItem =
         const data = await response.json();
 
         if (!response.ok) {
-          mensaje.textContent = data.error;
-          mensaje.className = "mt-3 text-red-500";
+          if (mensaje) {
+            mensaje.textContent = data.error;
+            mensaje.className = "mt-3 text-sm text-red-500";
+          }
           return;
         }
 
-        mensaje.textContent = "Inscripción realizada correctamente";
-        mensaje.className = "mt-3 text-green-600";
+        if (mensaje) {
+          mensaje.textContent = "Inscripción realizada correctamente";
+          mensaje.className = "mt-3 text-sm text-green-600";
+        }
       } catch {
-        mensaje.textContent = "Error conexión servidor";
-        mensaje.className = "mt-3 text-red-500";
+        if (mensaje) {
+          mensaje.textContent = "Error conexión servidor";
+          mensaje.className = "mt-3 text-sm text-red-500";
+        }
       }
     });
   </script>

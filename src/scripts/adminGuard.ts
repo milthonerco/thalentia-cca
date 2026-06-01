@@ -22,7 +22,7 @@ async function verificarSeguridadAdmin() {
   try {
     // 2. Comprobar rol administrativo real contra Supabase
     const { isAdmin } = await checkUserRole(emailAValidar);
-    console.log(`[🔐 Guardián] Perfil verificado: ${emailAValidar} | Rol Administrador: ${isAdmin}`);
+
 
     if (!isAdmin) {
       console.error("[🔐 Guardián] Acceso no autorizado para este usuario. Redirigiendo...");

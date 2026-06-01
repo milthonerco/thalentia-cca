@@ -6,13 +6,15 @@ type Academia = {
     slug: string;
     categoria: string;
     descripcion: string | null;
-    cupo_maximo: number;
+    cupo_maximo: number;       // <-- Ya lo tenías
+    inscritos_actuales: number; // <-- ¡Añadimos tu columna real!
     activa: boolean;
     coordinador_email: string | null;
     cursos_permitidos: number[];
     ruta_categoria: string;
 };
 
+// Modificamos el tipo extendido para usar tus datos reales
 type AcademiaConCupos = Academia & {
     cuposDisponibles: number;
 };
@@ -21,8 +23,7 @@ export async function obtenerCupos(
     email: string
 ): Promise<AcademiaConCupos[]> {
 
-    const { data: estudiante } =
-    await supabase
+    const { data: estudiante } = await supabase
         .from("estudiantes")
         .select("curso")
         .eq("email", email)
@@ -30,101 +31,27 @@ export async function obtenerCupos(
 
     if (!estudiante) return [];
 
-    const { data: academias } =
-    await supabase
+    // Traemos de una vez tus columnas físicas
+    const { data: academias } = await supabase
         .from("academias")
-        .select("*")
+        .select("*") 
         .eq("activa", true);
 
     if (!academias) return [];
 
     const filtradas = academias.filter(
-
-        a =>
-
-        a.cursos_permitidos?.includes(
-            estudiante.curso
-        )
-
+        a => a.cursos_permitidos?.includes(estudiante.curso)
     );
 
     if (!filtradas.length) return [];
 
-
-    /*
-    UNA SOLA CONSULTA
-    EN VEZ DE 20 COUNTS
-    */
-
-    const ids = filtradas.map(
-        a => a.id
-    );
-
-    const {
-
-        data: inscripciones
-
-    }
-
-    =
-
-    await supabase
-
-        .from("inscripciones")
-
-        .select(`
-            academia_id,
-            estado
-        `)
-
-        .in(
-            "academia_id",
-            ids
-        )
-
-        .eq(
-            "estado",
-            "activa"
-        );
-
-
-    return filtradas.map(
-
-        academia => {
-
-            const inscritos =
-
-                inscripciones?.filter(
-
-                    i =>
-
-                    i.academia_id
-                    ===
-                    academia.id
-
-                ).length
-
-                ||
-
-                0;
-
-
-            return {
-
-                ...academia,
-
-                cuposDisponibles:
-
-                    academia.cupo_maximo
-
-                    -
-
-                    inscritos
-
-            };
-
-        }
-
-    );
-
+    // Borramos toda la consulta secundaria a la tabla "inscripciones".
+    // Ahora simplemente calculamos el flag virtual basándonos en tus columnas.
+    return filtradas.map(academia => {
+        return {
+            ...academia,
+            // Si tus columnas físicas dicen 30 y 30, esto dará 0
+            cuposDisponibles: academia.cupo_maximo - academia.inscritos_actuales
+        };
+    });
 }

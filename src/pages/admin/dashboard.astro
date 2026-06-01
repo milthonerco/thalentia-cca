@@ -61,18 +61,34 @@ export const prerender = false;
     </div>
 
     <div class="bg-white rounded-lg shadow-sm p-6 mb-8 text-black">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Gestión de academias</h2>
-            <div class="flex w-full sm:w-auto items-center gap-3">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Gestión de academias</h2>
+                
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider self-center mr-1">Masivo local:</span>
+                    <button id="mass-activa" class="px-2 py-1 text-xs bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 font-medium transition text-gray-700">
+                        Invertir Activa
+                    </button>
+                    <button id="mass-inscripcion" class="px-2 py-1 text-xs bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 font-medium transition text-gray-700">
+                        Invertir Inscripciones
+                    </button>
+                    <button id="mass-cancelacion" class="px-2 py-1 text-xs bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 font-medium transition text-gray-700">
+                        Invertir Permitir Salir
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row w-full lg:w-auto items-center gap-3 sm:self-end">
                 <input 
                     type="text" 
                     id="search-academias"
                     placeholder="Buscar por categoría o nombre..." 
-                    class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                 />
                 <button 
                     id="save-changes-btn"
-                    class="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition font-medium text-sm whitespace-nowrap"
+                    class="w-full sm:w-auto px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition font-medium text-sm whitespace-nowrap shadow-sm"
                 >
                     Flujo Guardar Cambios
                 </button>
@@ -87,14 +103,15 @@ export const prerender = false;
                         <th class="px-6 py-3">Categoría</th>
                         <th class="px-6 py-3 text-center">Inscritos</th>
                         <th class="px-6 py-3 text-center">Cupo máx</th>
-                        <th class="px-6 py-3 text-center">Activa</th>
-                        <th class="px-6 py-3 text-center">Inscripciones</th>
+                        <th class="px-6 py-3 text-center text-blue-600 font-bold">1. Activa (Ver Academia)</th>
+                        <th class="px-6 py-3 text-center text-green-600 font-bold">2. Inscrip. Abiertas</th>
+                        <th class="px-6 py-3 text-center text-red-600 font-bold">3. Permitir Salir</th>
                         <th class="px-6 py-3 text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="academias-tbody" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">Cargando academias desde Supabase...</td>
+                        <td colspan="8" class="px-6 py-8 text-center text-gray-500">Cargando academias desde Supabase...</td>
                     </tr>
                 </tbody>
             </table>
@@ -107,13 +124,13 @@ export const prerender = false;
         <div class="flex gap-3 mb-6">
             <button 
                 id="export-csv"
-                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm"
+                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm shadow-sm flex items-center gap-1"
             >
                 📊 Exportar CSV
             </button>
             <button 
                 id="refresh-reports"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-sm shadow-sm flex items-center gap-1"
             >
                 🔄 Actualizar
             </button>
@@ -140,6 +157,44 @@ export const prerender = false;
         </div>
     </div>
 
+</div>
+
+<div id="modal-estudiantes" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-200 text-black">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden mx-4">
+        <div class="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
+            <div>
+                <h3 id="modal-title" class="font-bold text-lg">Alumnos Inscritos</h3>
+                <p id="modal-subtitle" class="text-xs text-gray-400">Cargando información...</p>
+            </div>
+            <button id="close-modal-btn" class="text-gray-400 hover:text-white transition text-xl font-bold">&times;</button>
+        </div>
+        
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Lista Oficial</span>
+                <button 
+                    id="btn-copiar-info" 
+                    class="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-md text-xs font-semibold hover:bg-blue-100 transition flex items-center gap-1"
+                >
+                    📋 Copiar Lista de Estudiantes
+                </button>
+            </div>
+
+            <div class="overflow-y-auto max-h-[350px] border border-gray-100 rounded-lg">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-50 text-xs font-semibold text-gray-600 uppercase border-b border-gray-100">
+                        <tr>
+                            <th class="px-4 py-2">Estudiante</th>
+                            <th class="px-4 py-2">Curso</th>
+                            <th class="px-4 py-2 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-tbody" class="divide-y divide-gray-100">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="/src/scripts/adminGuard.ts"></script>
