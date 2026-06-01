@@ -639,7 +639,7 @@ async function exportCSV() {
   }
 }
 
-// Exposición global absoluta
+// Exposición global absoluta 
 window.registrarCambioMemoria = registrarCambioMemoria;
 window.verEstudiantes = verEstudiantes;
 window.editarAcademia = editarAcademia;
