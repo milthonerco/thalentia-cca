@@ -3,7 +3,7 @@ title: "Karate"
 description: "Más que una disciplina deportiva, Karate es una experiencia que fortalece cuerpo, mente y carácter. A través de esta academia, nuestros estudiantes desarrollarán autocontrol, respeto, concentración y perseverancia mientras aprenden técnicas y valores que podrán aplicar dentro y fuera del CCA."
 edad: "7 a 11 años"
 
-horario: "(Miercoles  de 15:00 a 16:00 - Primaria)"
-image: "/StarsCup/karate.png"
+horario: "(Miercoles  de 15:00 a 16:00 - Primaria)  - (Martes  de 15:20 a 16:20 - Secundaria)"
+image: "/StarsCup/karate.webp"
 category: "stars-cup"
 ---

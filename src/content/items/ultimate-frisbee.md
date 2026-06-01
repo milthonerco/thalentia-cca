@@ -4,7 +4,7 @@ description: "Diversión, movimiento y estrategia se unen en una experiencia inn
 edad: "7 a 17 años"
 
 horario: "(Miercoles  de 15:00 a 16:00 - Primaria) - ( Lunes de 15:20 a 16:20 - Secundaria)"
-image: "/StarsCup/ultimateFrisbee.png"
+image: "/StarsCup/ultimateFrisbee.webp"
 category: "stars-cup"
 ---
 

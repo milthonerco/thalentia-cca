@@ -2,14 +2,18 @@
 const footerLinks = [
   {
     links: [
-      { text: "GRANNY HALL", href: "/categories/granny-hall" },
+      { text: "LIFESTYLE", href: "/categories/lifestyle" },
       {
         text: "FRENCH GASTRONOMY",
-        href: "/categories/granny-hall/french-gastronomy",
+        href: "/categories/lifestyle/french-gastronomy",
       },
-      { text: "CRAFTS", href: "/categories/granny-hall/crafts" },
+      { text: "CRAFTS", href: "/categories/lifestyle/crafts" },
       //{ text: "1 TIM 4:12", href: "/categories/granny-hall/1tim4-12" },
-      { text: "HANDS ON GARDEN", href: "/categories/granny-hall/hands-garden" },
+       {
+        text: "ECONOMÍA y FINANZAS",
+        href: "/categories/lifestyle/economia-finanzas",
+      },
+      { text: "HANDS ON GARDEN", href: "/categories/lifestyle/hands-garden" },
     ],
   },
   {
@@ -37,13 +41,22 @@ const footerLinks = [
   },
   {
     links: [
-      { text: "ECONOMÍA y FINANZAS", href: "/categories/economia-finanzas" },
+      { text: "MR. MASCADO TECH", href: "/categories/mr-mascadedo-tech" },
       {
-        text: "ECONOMÍA y FINANZAS",
-        href: "/categories/economia-finanzas/economia-finanzas",
+        text: "EXPLORATION ROVER",
+        href: "/categories/mr-mascadedo-tech/exploration-rover",
+      },
+      {
+        text: "SPACE GREENHOUSE",
+        href: "/categories/mr-mascadedo-tech/space-greenhouse",
+      },
+      {
+        text: "SPACE HABITAT",
+        href: "/categories/mr-mascadedo-tech/space-habitat",
       },
     ],
   },
+
 ];
 
 const giantText = "THALENTIA".split("");
@@ -76,18 +89,48 @@ const giantText = "THALENTIA".split("");
       }
     </div>
 
-    <div class="space-y-4 bg-white/10 p-6 rounded-lg backdrop-blur-sm border border-white/10">
-      <div class="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#FFFCFB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
-        <h4 class="text-xl font-bold text-[#FFFCFB] tracking-wide">Tienda Escolar</h4>
-      </div>
+    <!-- Bloque Derecho: Tienda Escolar + Contacto Directora -->
+    <div class="space-y-6 bg-white/10 p-6 rounded-lg backdrop-blur-sm border border-white/10">
       
-      <p class="text-sm md:text-base text-white/90 leading-relaxed font-light">
-         Recuerda que la tienda escolar permanece habilitada durante toda la 
-        <span class="font-semibold text-white">jornada de academias</span>. Un espacio pensado para que los estudiantes puedan adquirir de manera cómoda y rápida cualquier producto que necesiten a lo largo de sus actividades.
-      </p>
+      <!-- Tienda Escolar -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#FFFCFB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <h4 class="text-xl font-bold text-[#FFFCFB] tracking-wide">Tienda Escolar</h4>
+        </div>
+        
+        <p class="text-sm md:text-base text-white/90 leading-relaxed font-light">
+           Recuerda que la tienda escolar permanece habilitada durante toda la 
+          <span class="font-semibold text-white">jornada de academias</span>. Un espacio pensado para que los estudiantes puedan adquirir de manera cómoda y rápida cualquier producto que necesiten a lo largo de sus actividades.
+        </p>
+      </div>
+
+      <!-- Línea Divisoria Sutil -->
+      <div class="w-full h-[1px] bg-white/20"></div>
+
+      <!-- NUEVA SECCIÓN: Información de Dirección Académica -->
+      <div class="space-y-2">
+        <div class="flex items-center gap-2 text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5" />
+          </svg>
+          <span class="text-xs font-bold uppercase tracking-[0.15em] text-white">Contacto Académico</span>
+        </div>
+        
+        <div class="text-sm md:text-base font-light text-white/90">
+          <p class="font-semibold text-white">Juliana Cerón</p>
+          <p class="text-xs text-white/70 mb-1">Directora de Academias</p>
+          <a 
+            href="mailto:julianaceron@cca.edu.co" 
+            class="text-sm underline decoration-white/30 hover:decoration-[#9B177E] hover:text-[#9B177E] transition-colors duration-200 block mt-1 break-all"
+          >
+            julianaceron@cca.edu.co
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
 

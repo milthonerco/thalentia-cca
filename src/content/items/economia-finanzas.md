@@ -4,7 +4,7 @@ description: "Una academia diseñada para desarrollar habilidades prácticas par
 edad: "7 a 17 años"
 
 horario: "(Lunes  de 15:00 a 16:00 - Primaria) - ( Viernes de 15:20 a 16:20 - Secundaria)"
-image: "/finanzas/finanzas.png"
-category: "economia-finanzas"
+image: "/finanzas/finanzas.webp"
+category: "lifestyle"
 ---
 

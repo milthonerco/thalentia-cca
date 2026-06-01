@@ -4,6 +4,6 @@ description: "Una academia para mentes curiosas, estratégicas y creativas. Ches
 edad: "7 a 17 años"
 
 horario: "(Miercoles  de 15:00 a 16:00 - Primaria) - ( Jueves de 15:20 a 16:20 - Secundaria)"
-image: "/StarsCup/chess.png"
+image: "/StarsCup/chess.webp"
 category: "stars-cup"
 ---
