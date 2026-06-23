@@ -48,11 +48,20 @@ export async function inscribirEstudiante(
 
   /*
   ====================================
-  VALIDAR SI LAS INSCRIPCIONES ESTÁN ABIERTAS
+  VALIDAR SI LAS INSCRIPCIONES ESTÁN ABIERTAS (POR CAMPO Y POR TIEMPO)
   ====================================
   */
   if (academia.inscripcion_abierta === false) {
     throw new Error("Las inscripciones están deshabilitadas");
+  }
+
+  // VALIDACIÓN DE TIEMPO EXPIRADO (FRONTEND INTELIGENTE - BACKEND SHIELD)
+  if (academia.fecha_cierre) {
+    const ahora = new Date();
+    const fechaCierre = new Date(academia.fecha_cierre);
+    if (ahora > fechaCierre) {
+      throw new Error("El tiempo límite de inscripción ha expirado");
+    }
   }
 
   /*

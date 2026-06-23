@@ -1,5 +1,5 @@
 ---
-title: "Economía y Finanzas"
+title: "ECONOMICS AND FINANCE"
 description: "Una academia diseñada para desarrollar habilidades prácticas para la vida. En Economía y Finanzas, nuestros estudiantes aprenderán sobre ahorro, emprendimiento y manejo responsable del dinero mientras fortalecen pensamiento estratégico, toma de decisiones y liderazgo para el futuro."
 edad: "7 a 17 años"
 

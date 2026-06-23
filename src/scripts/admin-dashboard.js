@@ -6,6 +6,27 @@ let cambiosPendientes = {};
 let academiasFiltradasActualmente = []; // Control para las operaciones masivas
 let academiaSeleccionadaIdActual = null; // Guardar referencia de operación del modal
 
+// ============= COMPATIBILIDAD CON INJECTS GLOBALES (WINDOW) =============
+window.registrarCambioMemoria = registrarCambioMemoria;
+window.verEstudiantes = verEstudiantes;
+window.darDeBajaEstudiante = darDeBajaEstudiante;
+window.editarAcademia = editarAcademia;
+
+// ============= HELPER: FORMATEAR FECHAS PARA HTML5 =============
+function formatearFechaParaInput(fechaISO) {
+  if (!fechaISO) return "";
+  const d = new Date(fechaISO);
+  if (isNaN(d.getTime())) return "";
+  
+  const anio = d.getFullYear();
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+  const horas = String(d.getHours()).padStart(2, "0");
+  const minutos = String(d.getMinutes()).padStart(2, "0");
+  
+  return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
+}
+
 // ============= INICIALIZACIÓN =============
 async function init() {
   await cargarAcademias();
@@ -13,6 +34,8 @@ async function init() {
   setupEventListeners();
   setupModalListeners();
 }
+
+init();
 
 // ============= CARGAR ACADEMIAS =============
 async function cargarAcademias() {
@@ -33,7 +56,7 @@ async function cargarAcademias() {
     console.error("Error cargando academias:", err);
     const tbody = document.getElementById("academias-tbody");
     if (tbody) {
-      tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-red-600">Error cargando academias</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-red-600">Error cargando academias</td></tr>';
     }
   }
 }
@@ -44,35 +67,87 @@ function renderAcademias(academiasToShow) {
   if (!tbody) return;
 
   if (academiasToShow.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No hay academias</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-gray-500">No hay academias</td></tr>';
     return;
   }
 
+  const ahora = new Date();
+
   tbody.innerHTML = academiasToShow
     .map((academia) => {
+      // Obtener fechas (priorizando memoria)
+      const fApertura = cambiosPendientes[academia.id]?.hasOwnProperty('fecha_apertura')
+        ? cambiosPendientes[academia.id].fecha_apertura
+        : (academia.fecha_apertura ?? "");
+
+      const fCierre = cambiosPendientes[academia.id]?.hasOwnProperty('fecha_cierre')
+        ? cambiosPendientes[academia.id].fecha_cierre
+        : (academia.fecha_cierre ?? "");
+
+      // Evaluamos si expiró para una alerta visual sutil en el texto (sin bloquear nada)
+      const fechaCierreDate = fCierre ? new Date(fCierre) : null;
+      const haExpiradoElTiempo = fechaCierreDate && ahora > fechaCierreDate;
+
+      // Estado 1: Activa
       const estaActiva = cambiosPendientes[academia.id]?.hasOwnProperty('activa') 
         ? cambiosPendientes[academia.id].activa 
         : academia.activa;
 
+      // Estado 2: Inscripción Abierta (100% editable por ti)
       const inscAbierta = cambiosPendientes[academia.id]?.hasOwnProperty('inscripcion_abierta') 
         ? cambiosPendientes[academia.id].inscripcion_abierta 
         : academia.inscripcion_abierta;
 
+      // Estado 3: Permitir Cancelación (100% editable por ti)
       const permiteCancelacion = cambiosPendientes[academia.id]?.hasOwnProperty('permitir_cancelacion') 
         ? cambiosPendientes[academia.id].permitir_cancelacion 
         : (academia.permitir_cancelacion ?? true);
+
+      // Cupos
+      const cupoMax = cambiosPendientes[academia.id]?.hasOwnProperty('cupo_maximo')
+        ? cambiosPendientes[academia.id].cupo_maximo
+        : (academia.cupo_maximo ?? 0);
 
       return `
         <tr class="border-b border-gray-100 hover:bg-gray-50 transition text-black">
           <td class="px-6 py-4">
             <p class="font-medium text-gray-900">${academia.nombre}</p>
-            <p class="text-xs text-gray-500">${academia.slug || ''}</p>
+            <p class="text-xs ${haExpiradoElTiempo ? 'text-amber-600 font-medium' : 'text-gray-500'}">
+              ${haExpiradoElTiempo ? '⏰ Expirada (Se cerrará al guardar)' : (academia.slug || '')}
+            </p>
           </td>
           <td class="px-6 py-4 text-gray-600">${academia.categoria || 'General'}</td>
           <td class="px-6 py-4 text-center">
             <span class="font-semibold text-gray-900">${academia.inscritos_actuales || 0}</span>
           </td>
-          <td class="px-6 py-4 text-center text-gray-600">${academia.cupo_maximo || 0}</td>
+          
+          <td class="px-6 py-4 text-center">
+            <input 
+              type="number" 
+              min="0"
+              value="${cupoMax}"
+              onchange="window.registrarCambioMemoria('${academia.id}', parseInt(this.value) || 0, 'cupo_maximo')"
+              class="w-16 px-1.5 py-1 text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium bg-white text-black"
+            />
+          </td>
+
+          <td class="px-6 py-4 text-center">
+            <input 
+              type="datetime-local"
+              value="${formatearFechaParaInput(fApertura)}"
+              onchange="window.registrarCambioMemoria('${academia.id}', this.value ? new Date(this.value).toISOString() : null, 'fecha_apertura')"
+              class="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white"
+            />
+          </td>
+
+          <td class="px-6 py-4 text-center">
+            <input 
+              type="datetime-local"
+              value="${formatearFechaParaInput(fCierre)}"
+              onchange="window.registrarCambioMemoria('${academia.id}', this.value ? new Date(this.value).toISOString() : null, 'fecha_cierre')"
+              class="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white"
+            />
+          </td>
           
           <td class="px-6 py-4 text-center">
             <label class="inline-flex items-center cursor-pointer">
@@ -107,7 +182,7 @@ function renderAcademias(academiasToShow) {
             </label>
           </td>
 
-          <td class="px-6 py-4 text-center font-medium">
+          <td class="px-6 py-4 text-center font-medium whitespace-nowrap">
             <button 
               onclick="window.verEstudiantes('${academia.id}')"
               class="text-blue-600 hover:text-blue-800 text-sm p-1"
@@ -147,28 +222,6 @@ function actualizarEstiloBotonGuardar() {
   }
 }
 
-// ============= ACCIONES MASIVAS EN MEMORIA =============
-function alternarEstadoMasivo(campo) {
-  if (academiasFiltradasActualmente.length === 0) return;
-
-  const primerId = academiasFiltradasActualmente[0].id;
-  const estadoActualPrimerElemento = cambiosPendientes[primerId]?.hasOwnProperty(campo)
-    ? cambiosPendientes[primerId][campo]
-    : academiasFiltradasActualmente[0][campo];
-
-  const nuevoEstadoColectivo = !estadoActualPrimerElemento;
-
-  academiasFiltradasActualmente.forEach((academia) => {
-    if (!cambiosPendientes[academia.id]) {
-      cambiosPendientes[academia.id] = {};
-    }
-    cambiosPendientes[academia.id][campo] = nuevoEstadoColectivo;
-  });
-
-  actualizarEstiloBotonGuardar();
-  renderAcademias(academiasFiltradasActualmente);
-}
-
 // ============= PROCESAR Y ENVIAR LOTES A SUPABASE =============
 async function guardarTodosLosCambios() {
   const idsAProcesar = Object.keys(cambiosPendientes);
@@ -184,8 +237,28 @@ async function guardarTodosLosCambios() {
   }
 
   try {
+    const ahora = new Date();
+
     for (const id of idsAProcesar) {
       const payload = cambiosPendientes[id];
+      
+      if (payload.hasOwnProperty('fecha_apertura') && !payload.fecha_apertura) payload.fecha_apertura = null;
+      if (payload.hasOwnProperty('fecha_cierre') && !payload.fecha_cierre) payload.fecha_cierre = null;
+
+      // REVISIÓN AUTOMÁTICA DE TIEMPO EXPIRADO ANTES DE ENVIAR A SUPABASE:
+      // Si el registro final tiene una fecha de cierre establecida y esa fecha ya pasó en el tiempo real,
+      // forzamos que las columnas se modifiquen e inserten como FALSE en la base de datos de manera definitiva.
+      const academiaOriginal = academias.find(a => a.id === id);
+      const fechaCierreFinal = payload.hasOwnProperty('fecha_cierre') ? payload.fecha_cierre : (academiaOriginal?.fecha_cierre);
+
+      if (fechaCierreFinal) {
+        const fechaLimite = new Date(fechaCierreFinal);
+        if (ahora > fechaLimite) {
+          payload.inscripcion_abierta = false;
+          payload.permitir_cancelacion = false;
+        }
+      }
+
       const { error } = await supabase
         .from("academias")
         .update(payload)
@@ -194,12 +267,12 @@ async function guardarTodosLosCambios() {
       if (error) throw error;
     }
 
-    alert("🎉 ¡Todos los cambios de las academias se han sincronizado con éxito!");
+    alert("🎉 ¡Todos los cambios se han sincronizado con éxito! (Cualquier academia cuya fecha ya venció fue cerrada automáticamente en la BD).");
     
     if (saveBtn) {
       saveBtn.classList.remove("bg-amber-600", "hover:bg-amber-700", "animate-pulse");
       saveBtn.classList.add("bg-gray-400", "hover:bg-gray-500");
-      saveBtn.innerText = "💾 Guardar Cambios";
+      saveBtn.innerText = "Flujo Guardar Cambios";
       saveBtn.disabled = false;
     }
 
@@ -207,9 +280,51 @@ async function guardarTodosLosCambios() {
     await cargarReportes();
   } catch (err) {
     console.error("❌ Error guardando lote:", err);
-    alert("Ocurrió un error al guardar. Se restaurarán los valores del servidor.");
-    await cargarAcademias();
+    alert("Ocurrió un error al guardar. Verifica la consola para más detalles.");
+    if (saveBtn) {
+      saveBtn.innerText = "💾 Guardar Cambios (Reintentar)";
+      saveBtn.disabled = false;
+    }
   }
+}
+
+// ============= ACCIÓN MASIVA: APLICAR FECHAS GLOBALES A MEMORIA =============
+function aplicarFechasGlobalesMasivas() {
+  const inputAperturaGlobal = document.getElementById("global-apertura");
+  const inputCierreGlobal = document.getElementById("global-cierre");
+
+  if (!inputAperturaGlobal || !inputCierreGlobal) return;
+
+  const valorApertura = inputAperturaGlobal.value;
+  const valorCierre = inputCierreGlobal.value;
+
+  if (!valorApertura || !valorCierre) {
+    alert("Por favor, selecciona ambas fechas (Apertura y Cierre) antes de aplicar globalmente.");
+    return;
+  }
+
+  const fechaAperturaISO = new Date(valorApertura).toISOString();
+  const fechaCierreISO = new Date(valorCierre).toISOString();
+
+  const confirmar = confirm(`¿Estás seguro de que deseas aplicar estas fechas a las ${academiasFiltradasActualmente.length} academias visibles? Al presionar guardar, se controlarán los estados de apertura y cancelación según los límites de tiempo.`);
+  if (!confirmar) return;
+
+  academiasFiltradasActualmente.forEach((academia) => {
+    if (!cambiosPendientes[academia.id]) {
+      cambiosPendientes[academia.id] = {};
+    }
+
+    // Al aplicar globalmente, asignamos las fechas y activamos los campos por defecto en memoria
+    cambiosPendientes[academia.id]["fecha_apertura"] = fechaAperturaISO;
+    cambiosPendientes[academia.id]["fecha_cierre"] = fechaCierreISO;
+    cambiosPendientes[academia.id]["inscripcion_abierta"] = true;
+    cambiosPendientes[academia.id]["permitir_cancelacion"] = true;
+  });
+
+  actualizarEstiloBotonGuardar();
+  renderAcademias(academiasFiltradasActualmente);
+  
+  alert("⚙️ Fechas aplicadas y campos marcados en la tabla. Ahora tienes el control total para editarlos de forma individual si lo deseas antes de presionar '💾 Guardar Cambios'.");
 }
 
 // ============= CONSULTAR ESTUDIANTES (MODAL) =============
@@ -341,15 +456,12 @@ function copiarInfoAlPortapapeles() {
     });
 }
 
-// ============= ACCIÓN CRÍTICA: DAR DE BAJA MEDIANTE EL ENDPOINT API (SOLUCIONADO) =============
+// ============= ACCIÓN CRÍTICA: DAR DE BAJA MEDIANTE EL ENDPOINT API =============
 async function darDeBajaEstudiante(inscripcionId, nombreEstudiante, studentEmail) {
   const confirmar = confirm(`¿Estás seguro de que deseas dar de baja a ${nombreEstudiante} de esta academia?`);
   if (!confirmar) return;
 
-
-
   try {
-    // Usamos el endpoint API que tienes configurado en tu servidor Astro para saltar el RLS del cliente de forma segura.
     const response = await fetch("/api/cancel-inscription", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -367,7 +479,6 @@ async function darDeBajaEstudiante(inscripcionId, nombreEstudiante, studentEmail
 
     alert(`Se ha procesado correctamente la baja de ${nombreEstudiante}.`);
     
-    // Recargar interfaces locales
     await cargarAcademias();
     await cargarReportes();
     verEstudiantes(academiaSeleccionadaIdActual);
@@ -443,7 +554,6 @@ function renderReportes() {
     .join("");
 }
 
-// ============= ACTUALIZAR TARJETAS DE ESTADÍSTICAS =============
 function updateStatsCards() {
   const totalAcademiasEl = document.getElementById("total-academias");
   const totalEstudiantesEl = document.getElementById("total-estudiantes");
@@ -488,9 +598,7 @@ function setupEventListeners() {
     saveChangesBtn.addEventListener("click", guardarTodosLosCambios);
   }
 
-  document.getElementById("mass-activa")?.addEventListener("click", () => alternarEstadoMasivo('activa'));
-  document.getElementById("mass-inscripcion")?.addEventListener("click", () => alternarEstadoMasivo('inscripcion_abierta'));
-  document.getElementById("mass-cancelacion")?.addEventListener("click", () => alternarEstadoMasivo('permitir_cancelacion'));
+  document.getElementById("btn-aplicar-fechas-globales")?.addEventListener("click", aplicarFechasGlobalesMasivas);
 
   const logoutBtn = document.getElementById("logout");
   if (logoutBtn) {
@@ -546,8 +654,7 @@ function setupModalListeners() {
   }
 }
 
-// ============= EXPORTAR DETALLE NOMINAL EN CSV (CON FECHA CORRECTA) =============
-// ============= EXPORTAR DETALLE NOMINAL EN CSV (CON FECHA Y HORA EN EL NOMBRE) =============
+// ============= EXPORTAR DETALLE NOMINAL EN CSV =============
 async function exportCSV() {
   const exportBtn = document.getElementById("export-csv");
   if (exportBtn) {
@@ -556,7 +663,6 @@ async function exportCSV() {
   }
 
   try {
-    // 1. Traer todas las inscripciones activas con su fecha_inscripcion real
     const { data: todasLasInscripciones, error: errInsc } = await supabase
       .from("inscripciones")
       .select("id, academia_id, student_email, fecha_inscripcion")
@@ -573,17 +679,14 @@ async function exportCSV() {
       return;
     }
 
-    // 2. Traer la información de todos los estudiantes para cruzar los nombres y cursos
     const { data: todosLosEstudiantes, error: errEst } = await supabase
       .from("estudiantes")
       .select("email, nombre, curso");
 
     if (errEst) throw errEst;
 
-    // 3. Definir las cabeceras del CSV incluyendo la fecha
     let csv = "Academia,Nombre Estudiante,Email,Curso,Fecha Inscripcion\n";
 
-    // 4. Recorrer cada academia y buscar qué estudiantes pertenecen a ella
     academias.forEach((academia) => {
       const inscripcionesDeEstaAcademia = todasLasInscripciones.filter(
         (insc) => insc.academia_id === academia.id
@@ -606,43 +709,31 @@ async function exportCSV() {
       });
     });
 
-    // 5. Obtener la fecha y hora local actual para el nombre del archivo
     const ahora = new Date();
     const anio = ahora.getFullYear();
-    const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-    const dia = String(ahora.getDate()).padStart(2, '0');
-    const horas = String(ahora.getHours()).padStart(2, '0');
-    const minutos = String(ahora.getMinutes()).padStart(2, '0');
-    
-    const timestampNombre = `${anio}-${mes}-${dia}_${horas}-${minutos}`;
+    const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+    const dia = String(ahora.getDate()).padStart(2, "0");
+    const horas = String(ahora.getHours()).padStart(2, "0");
+    const minutos = String(ahora.getMinutes()).padStart(2, "0");
 
-    // 6. Crear el archivo para su descarga automática con firma UTF-8 BOM para Excel
     const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: "text/csv;charset=utf-8;" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    
-    // El archivo se descargará como: reporte-nominal-academias-2026-06-01_14-52.csv
-    a.download = `reporte-nominal-academias-${timestampNombre}.csv`;
-    
-    a.click();
-    window.URL.revokeObjectURL(url);
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", `Reporte_Nominal_Academias_${anio}-${mes}-${dia}_${horas}-${minutos}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-  } catch (err) {
-    console.error("Error al exportar el CSV:", err);
-    alert("No se pudo generar el reporte detallado.");
-  } finally {
     if (exportBtn) {
-      exportBtn.innerText = "📊 Exportar Reporte";
+      exportBtn.innerText = "📊 Exportar CSV";
+      exportBtn.disabled = false;
+    }
+  } catch (err) {
+    console.error("Error exportando reporte:", err);
+    alert("Ocurrió un error al construir el archivo CSV.");
+    if (exportBtn) {
+      exportBtn.innerText = "📊 Exportar CSV";
       exportBtn.disabled = false;
     }
   }
 }
-
-// Exposición global absoluta 
-window.registrarCambioMemoria = registrarCambioMemoria;
-window.verEstudiantes = verEstudiantes;
-window.editarAcademia = editarAcademia;
-window.darDeBajaEstudiante = darDeBajaEstudiante;
-
-init();
