@@ -3,7 +3,6 @@ export const prerender = false;
 ---
 
 <html lang="es">
-...
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,8 +14,9 @@ export const prerender = false;
         class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen opacity-0 transition-opacity duration-200"
     >
         <div class="max-w-7xl mx-auto px-4 py-8">
+            
             <div
-                class="bg-white rounded-lg shadow-sm p-6 mb-8 flex justify-between items-center text-black"
+                class="bg-white rounded-lg shadow-sm p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-black"
             >
                 <div class="flex items-center gap-4">
                     <img
@@ -38,16 +38,16 @@ export const prerender = false;
                     </div>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="flex w-full md:w-auto gap-3 justify-end">
                     <a
                         href="/"
-                        class="px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition font-medium text-sm flex items-center gap-1"
+                        class="w-1/2 md:w-auto px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition font-medium text-sm flex items-center justify-center gap-1 text-center whitespace-nowrap"
                     >
-                        Premio Home
+                        Home
                     </a>
                     <button
                         id="logout"
-                        class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition font-medium text-sm"
+                        class="w-1/2 md:w-auto px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition font-medium text-sm text-center whitespace-nowrap"
                     >
                         Cerrar sesión
                     </button>
