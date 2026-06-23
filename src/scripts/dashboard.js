@@ -215,7 +215,7 @@ function inyectarBannerInformativo(fechaCierreISO) {
       
       <div class="py-1">
         <a href="/tienda-uniformes" id="btn-uniforme-link" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-colors no-underline shadow-sm">
-          👕 Solicitar Botón Uniforme
+          👕 Solicitar  Uniforme
         </a>
       </div>
     </div>

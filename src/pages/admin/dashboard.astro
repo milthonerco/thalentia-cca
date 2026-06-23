@@ -3,6 +3,7 @@ export const prerender = false;
 ---
 
 <html lang="es">
+...
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -114,8 +115,6 @@ export const prerender = false;
                         <h2 class="text-2xl font-bold text-gray-900">
                             Gestión de academias
                         </h2>
-
-                       
                     </div>
 
                     <div class="w-full lg:w-auto p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row items-end gap-3 shadow-sm">
@@ -152,33 +151,14 @@ export const prerender = false;
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm border-collapse">
                         <thead class="bg-gray-50 border-b border-gray-200">
-                            <tr
-                                class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
-                            >
+                            <tr class="text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 <th class="px-4 py-3">Academia</th>
                                 <th class="px-4 py-3">Categoría</th>
                                 <th class="px-4 py-3 text-center">Inscritos</th>
-                                <th class="px-4 py-3 text-center w-24"
-                                    >Cupo Máx</th
-                                >
-                                <th class="px-4 py-3 text-center"
-                                    >Apertura Inscripción</th
-                                >
-                                <th class="px-4 py-3 text-center"
-                                    >Cierre Inscripción</th
-                                >
-                                <th
-                                    class="px-4 py-3 text-center text-blue-600 font-bold"
-                                    >1. Activa</th
-                                >
-                                <th
-                                    class="px-4 py-3 text-center text-green-600 font-bold"
-                                    >2. Abierta</th
-                                >
-                                <th
-                                    class="px-4 py-3 text-center text-red-600 font-bold"
-                                    >3. Permitir Salir</th
-                                >
+                                <th class="px-4 py-3 text-center w-24">Cupo Máx</th>
+                                <th class="px-4 py-3 text-center">Apertura Inscripción</th>
+                                <th class="px-4 py-3 text-center">Cierre Inscripción</th>
+                                <th class="px-4 py-3 text-center text-blue-600 font-bold">Activa</th>
                                 <th class="px-4 py-3 text-center">Acciones</th>
                             </tr>
                         </thead>
@@ -188,7 +168,7 @@ export const prerender = false;
                         >
                             <tr>
                                 <td
-                                    colspan="10"
+                                    colspan="8"
                                     class="px-6 py-8 text-center text-gray-500"
                                     >Cargando academias desde Supabase...</td
                                 >
@@ -309,7 +289,6 @@ export const prerender = false;
                                 <thead
                                     class="bg-gray-50 text-xs font-semibold text-gray-600 uppercase border-b border-gray-100"
                                 >
-                                    convertir en
                                     <tr>
                                         <th class="px-4 py-2">Estudiante</th>
                                         <th class="px-4 py-2">Curso</th>

@@ -56,7 +56,7 @@ async function cargarAcademias() {
     console.error("Error cargando academias:", err);
     const tbody = document.getElementById("academias-tbody");
     if (tbody) {
-      tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-red-600">Error cargando academias</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-red-600">Error cargando academias</td></tr>';
     }
   }
 }
@@ -67,7 +67,7 @@ function renderAcademias(academiasToShow) {
   if (!tbody) return;
 
   if (academiasToShow.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="10" class="px-6 py-8 text-center text-gray-500">No hay academias</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No hay academias</td></tr>';
     return;
   }
 
@@ -84,24 +84,14 @@ function renderAcademias(academiasToShow) {
         ? cambiosPendientes[academia.id].fecha_cierre
         : (academia.fecha_cierre ?? "");
 
-      // Evaluamos si expiró para una alerta visual sutil en el texto (sin bloquear nada)
+      // Evaluamos si expiró para una alerta visual sutil en el texto
       const fechaCierreDate = fCierre ? new Date(fCierre) : null;
       const haExpiradoElTiempo = fechaCierreDate && ahora > fechaCierreDate;
 
-      // Estado 1: Activa
+      // Estado Único: Activa
       const estaActiva = cambiosPendientes[academia.id]?.hasOwnProperty('activa') 
         ? cambiosPendientes[academia.id].activa 
         : academia.activa;
-
-      // Estado 2: Inscripción Abierta (100% editable por ti)
-      const inscAbierta = cambiosPendientes[academia.id]?.hasOwnProperty('inscripcion_abierta') 
-        ? cambiosPendientes[academia.id].inscripcion_abierta 
-        : academia.inscripcion_abierta;
-
-      // Estado 3: Permitir Cancelación (100% editable por ti)
-      const permiteCancelacion = cambiosPendientes[academia.id]?.hasOwnProperty('permitir_cancelacion') 
-        ? cambiosPendientes[academia.id].permitir_cancelacion 
-        : (academia.permitir_cancelacion ?? true);
 
       // Cupos
       const cupoMax = cambiosPendientes[academia.id]?.hasOwnProperty('cupo_maximo')
@@ -113,7 +103,7 @@ function renderAcademias(academiasToShow) {
           <td class="px-6 py-4">
             <p class="font-medium text-gray-900">${academia.nombre}</p>
             <p class="text-xs ${haExpiradoElTiempo ? 'text-amber-600 font-medium' : 'text-gray-500'}">
-              ${haExpiradoElTiempo ? '⏰ Expirada (Se cerrará al guardar)' : (academia.slug || '')}
+              ${haExpiradoElTiempo ? '⏰ Expirada' : (academia.slug || '')}
             </p>
           </td>
           <td class="px-6 py-4 text-gray-600">${academia.categoria || 'General'}</td>
@@ -156,28 +146,6 @@ function renderAcademias(academiasToShow) {
                 ${estaActiva ? "checked" : ""} 
                 onchange="window.registrarCambioMemoria('${academia.id}', this.checked, 'activa')"
                 class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
-              />
-            </label>
-          </td>
-
-          <td class="px-6 py-4 text-center">
-            <label class="inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                ${inscAbierta ? "checked" : ""} 
-                onchange="window.registrarCambioMemoria('${academia.id}', this.checked, 'inscripcion_abierta')"
-                class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-2 focus:ring-green-500 cursor-pointer"
-              />
-            </label>
-          </td>
-
-          <td class="px-6 py-4 text-center">
-            <label class="inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                ${permiteCancelacion ? "checked" : ""} 
-                onchange="window.registrarCambioMemoria('${academia.id}', this.checked, 'permitir_cancelacion')"
-                class="w-5 h-5 rounded border-gray-300 text-red-600 focus:ring-2 focus:ring-red-500 cursor-pointer"
               />
             </label>
           </td>
@@ -237,27 +205,11 @@ async function guardarTodosLosCambios() {
   }
 
   try {
-    const ahora = new Date();
-
     for (const id of idsAProcesar) {
       const payload = cambiosPendientes[id];
       
       if (payload.hasOwnProperty('fecha_apertura') && !payload.fecha_apertura) payload.fecha_apertura = null;
       if (payload.hasOwnProperty('fecha_cierre') && !payload.fecha_cierre) payload.fecha_cierre = null;
-
-      // REVISIÓN AUTOMÁTICA DE TIEMPO EXPIRADO ANTES DE ENVIAR A SUPABASE:
-      // Si el registro final tiene una fecha de cierre establecida y esa fecha ya pasó en el tiempo real,
-      // forzamos que las columnas se modifiquen e inserten como FALSE en la base de datos de manera definitiva.
-      const academiaOriginal = academias.find(a => a.id === id);
-      const fechaCierreFinal = payload.hasOwnProperty('fecha_cierre') ? payload.fecha_cierre : (academiaOriginal?.fecha_cierre);
-
-      if (fechaCierreFinal) {
-        const fechaLimite = new Date(fechaCierreFinal);
-        if (ahora > fechaLimite) {
-          payload.inscripcion_abierta = false;
-          payload.permitir_cancelacion = false;
-        }
-      }
 
       const { error } = await supabase
         .from("academias")
@@ -267,7 +219,7 @@ async function guardarTodosLosCambios() {
       if (error) throw error;
     }
 
-    alert("🎉 ¡Todos los cambios se han sincronizado con éxito! (Cualquier academia cuya fecha ya venció fue cerrada automáticamente en la BD).");
+    alert("🎉 ¡Todos los cambios se han sincronizado con éxito!");
     
     if (saveBtn) {
       saveBtn.classList.remove("bg-amber-600", "hover:bg-amber-700", "animate-pulse");
@@ -306,7 +258,7 @@ function aplicarFechasGlobalesMasivas() {
   const fechaAperturaISO = new Date(valorApertura).toISOString();
   const fechaCierreISO = new Date(valorCierre).toISOString();
 
-  const confirmar = confirm(`¿Estás seguro de que deseas aplicar estas fechas a las ${academiasFiltradasActualmente.length} academias visibles? Al presionar guardar, se controlarán los estados de apertura y cancelación según los límites de tiempo.`);
+  const confirmar = confirm(`¿Estás seguro de que deseas aplicar estas fechas a las ${academiasFiltradasActualmente.length} academias visibles?`);
   if (!confirmar) return;
 
   academiasFiltradasActualmente.forEach((academia) => {
@@ -314,17 +266,14 @@ function aplicarFechasGlobalesMasivas() {
       cambiosPendientes[academia.id] = {};
     }
 
-    // Al aplicar globalmente, asignamos las fechas y activamos los campos por defecto en memoria
     cambiosPendientes[academia.id]["fecha_apertura"] = fechaAperturaISO;
     cambiosPendientes[academia.id]["fecha_cierre"] = fechaCierreISO;
-    cambiosPendientes[academia.id]["inscripcion_abierta"] = true;
-    cambiosPendientes[academia.id]["permitir_cancelacion"] = true;
   });
 
   actualizarEstiloBotonGuardar();
   renderAcademias(academiasFiltradasActualmente);
   
-  alert("⚙️ Fechas aplicadas y campos marcados en la tabla. Ahora tienes el control total para editarlos de forma individual si lo deseas antes de presionar '💾 Guardar Cambios'.");
+  alert("⚙️ Fechas aplicadas a la tabla. Ahora tienes el control total para editarlas de forma individual si lo deseas antes de presionar '💾 Guardar Cambios'.");
 }
 
 // ============= CONSULTAR ESTUDIANTES (MODAL) =============
