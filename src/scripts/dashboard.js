@@ -213,11 +213,7 @@ function inyectarBannerInformativo(fechaCierreISO) {
       <p>⚠️ Una vez finalizado el contador que se muestra en pantalla, **el sistema cerrará de forma automática las inscripciones** y no se admitirán más registros ni cancelaciones.</p>
       <p>🥋 Es de vital importancia recordar que los estudiantes deben **asistir obligatoriamente portando el uniforme oficial** correspondiente a su academia.</p>
       
-      <div class="py-1">
-        <a href="/tienda-uniformes" id="btn-uniforme-link" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-colors no-underline shadow-sm">
-          👕 Solicitar  Uniforme
-        </a>
-      </div>
+     
     </div>
   `;
 }
